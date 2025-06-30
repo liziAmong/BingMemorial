@@ -35,6 +35,8 @@ const videoDates = [
 ];
 let currentIndex = 0;
 let player;
+let autoplayEnabled = true;
+let randomEnabled = false;
 
 // ✅ 영상 순서 및 날짜 정보 업데이트
 function updateVideoInfo() {
@@ -71,6 +73,19 @@ function onPlayerReady(event) {
     currentIndex = (currentIndex + 1) % videoIds.length;
     player.loadVideoById(videoIds[currentIndex]);
     updateVideoInfo();
+  });
+}
+
+// ✅ 자동재생 토글 버튼 이벤트
+  document.getElementById("toggle-autoplay").addEventListener("click", () => {
+    autoplayEnabled = !autoplayEnabled;
+    document.getElementById("toggle-autoplay").textContent = `⏯ 자동재생: ${autoplayEnabled ? '켜짐' : '꺼짐'}`;
+  });
+
+  // ✅ 랜덤재생 토글 버튼 이벤트
+  document.getElementById("toggle-random").addEventListener("click", () => {
+    randomEnabled = !randomEnabled;
+    document.getElementById("toggle-random").textContent = `🔀 랜덤재생: ${randomEnabled ? '켜짐' : '꺼짐'}`;
   });
 }
 
