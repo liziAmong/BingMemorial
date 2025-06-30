@@ -45,10 +45,11 @@ soundButton.addEventListener("click", () => {
   audio.play();
 });
 
+/*
 // 자동 슬라이드
 setInterval(() => {
   currentIndex = (currentIndex + 1) % totalItems;
   updateDisplay();
 }, 5000);
-
+*/
 updateDisplay();
