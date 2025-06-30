@@ -42,6 +42,11 @@ function updateVideoInfo() {
   document.getElementById("video-date").textContent = `업로드 날짜: ${videoDates[currentIndex]}`;
 }
 
+function loadVideo(index) {
+  player.loadVideoById(videoIds[index]);
+  updateVideoInfo();
+}
+
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('youtube-player', {
     height: '360',
@@ -67,4 +72,12 @@ function onPlayerReady(event) {
     player.loadVideoById(videoIds[currentIndex]);
     updateVideoInfo();
   });
+}
+
+// ✅ 영상이 끝났을 때 다음 영상 자동 재생
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    currentIndex = (currentIndex + 1) % videoIds.length;
+    loadVideo(currentIndex);
+  }
 }
