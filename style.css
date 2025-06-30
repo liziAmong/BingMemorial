@@ -103,6 +103,34 @@ button:hover {
   color: #333;
 }
 
+.toggle-container {
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.toggle-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.on {
+  background-color: #4caf50;
+  color: white;
+}
+
+.toggle-btn.off {
+  background-color: #999;
+  color: white;
+}
+
+
 @media (min-width: 600px) {
   .menu {
     flex-direction: row;
