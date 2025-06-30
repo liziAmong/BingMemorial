@@ -2,14 +2,37 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>슬라이더 홈</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    :root {
+      --bg-color: #fff;
+      --text-color: #333;
+      --card-bg: #fff;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --label-bg: rgba(0, 0, 0, 0.5);
+      --label-color: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #121212;
+        --text-color: #f0f0f0;
+        --card-bg: #1e1e1e;
+        --card-shadow: rgba(255, 255, 255, 0.1);
+        --label-bg: rgba(255, 255, 255, 0.15);
+        --label-color: #fff;
+      }
+    }
+
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #fefefe;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       text-align: center;
-      padding: 50px;
+      padding: 40px 20px;
+      margin: 0;
     }
 
     h1 {
@@ -20,8 +43,8 @@
     .menu {
       display: flex;
       justify-content: center;
-      gap: 40px;
       flex-wrap: wrap;
+      gap: 30px;
     }
 
     .card-link {
@@ -29,13 +52,21 @@
     }
 
     .card {
-      width: 250px;
+      width: 260px;
       height: 160px;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: var(--card-bg);
+      box-shadow: 0 6px 15px var(--card-shadow);
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s;
+      opacity: 0.95;
       position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      opacity: 1;
     }
 
     .card img {
@@ -45,19 +76,21 @@
       display: block;
     }
 
-    .card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    }
-
     .card-label {
       position: absolute;
       bottom: 0;
       width: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
+      background: var(--label-bg);
+      color: var(--label-color);
       font-size: 1.1rem;
       padding: 10px 0;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 90vw;
+        height: 180px;
+      }
     }
   </style>
 </head>
