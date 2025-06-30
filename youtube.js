@@ -16,13 +16,30 @@ const videoIds = [
   "9mNDxlE3lbA", // 아이돌
 ];
 
+const videoDates = [
+  "2025-06-21", // 너에게 닿기를
+  "2025-04-27", // 자코자코
+  "2025-03-14", // 바니
+  "2024-12-21", // 소원을말해봐 
+  "2024-10-13", // 디토 
+  "2024-09-01", // 써머타임 
+  "2024-05-04", // 비비디
+  "2024-02-12", // 연예서쿨레이션
+  "2023-11-15", // 로리신 
+  "2023-10-22", // 디스코
+  "2023-09-02", // 아이아이
+  "2023-07-30", // 기상야자
+  "2023-07-16", // 데몬로드
+  "2023-05-13", // 사인은B
+  "2023-05-01", // 아이돌
+];
 let currentIndex = 0;
 let player;
 
 // ✅ 영상 순서 및 날짜 정보 업데이트
 function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
-  // 여기서 날짜 정보도 추가로 처리하고 싶다면 videoIds와 함께 날짜 배열을 만들 수도 있어요
+  document.getElementById("video-date").textContent = `업로드 날짜: ${videoDates[currentIndex]}`;
 }
 
 function onYouTubeIframeAPIReady() {
@@ -37,17 +54,17 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-  updateVideoInfo(); // 초기 표시
+  updateVideoInfo();
 
   document.getElementById("prev-video").addEventListener("click", () => {
     currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
     player.loadVideoById(videoIds[currentIndex]);
-    updateVideoInfo(); // 변경 후 표시
+    updateVideoInfo();
   });
 
   document.getElementById("next-video").addEventListener("click", () => {
     currentIndex = (currentIndex + 1) % videoIds.length;
     player.loadVideoById(videoIds[currentIndex]);
-    updateVideoInfo(); // 변경 후 표시
+    updateVideoInfo();
   });
 }
