@@ -9,13 +9,19 @@
   <h1>유튜브 영상 슬라이더</h1>
   <div class="slider-container">
     <div id="youtube-player"></div>
+    <div id="video-info">
+      <p id="video-order">영상 1 / ?</p>
+      <p id="video-date">업로드 날짜: 알 수 없음</p>
+    </div>
     <div class="controls">
       <button id="prev-video">이전 영상</button>
       <button id="next-video">다음 영상</button>
     </div>
+    <div class="controls">
+      <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
+    </div>
   </div>
 
-  <!-- YouTube API -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="youtube.js"></script>
 </body>
