@@ -1,44 +1,22 @@
 const videoIds = [
-  "TkzT-8xNaP8", // 너에게 닿기를
-  "G33eHNor1Kc", // 자코자코
-  "48tTGn9QNHA", // 바니
-  "Ydvct6uheHI", // 소원을말해봐 
-  "uI53kboOem0", // 디토 
-  "pSXa7732k4U", // 써머타임 
-  "NCO8v89pNDs", // 비비디
-  "aMv1jbqdHY4", // 연예서쿨레이션
-  "NCWwaBDlMnE", // 로리신 
-  "n1ly5P-DTEU", // 디스코
-  "NZK5wT7rq7E", // 아이아이
-  "wFa87J4vfik", // 기상야자
-  "JRttCcjxzQY", // 데몬로드
-  "ytHiCavTqKQ", // 사인은B
-  "9mNDxlE3lbA", // 아이돌
+  "TkzT-8xNaP8", "G33eHNor1Kc", "48tTGn9QNHA", "Ydvct6uheHI",
+  "uI53kboOem0", "pSXa7732k4U", "NCO8v89pNDs", "aMv1jbqdHY4",
+  "NCWwaBDlMnE", "n1ly5P-DTEU", "NZK5wT7rq7E", "wFa87J4vfik",
+  "JRttCcjxzQY", "ytHiCavTqKQ", "9mNDxlE3lbA"
 ];
 
 const videoDates = [
-  "2025-06-21", // 너에게 닿기를
-  "2025-04-27", // 자코자코
-  "2025-03-14", // 바니
-  "2024-12-21", // 소원을말해봐 
-  "2024-10-13", // 디토 
-  "2024-09-01", // 써머타임 
-  "2024-05-04", // 비비디
-  "2024-02-12", // 연예서쿨레이션
-  "2023-11-15", // 로리신 
-  "2023-10-22", // 디스코
-  "2023-09-02", // 아이아이
-  "2023-07-30", // 기상야자
-  "2023-07-16", // 데몬로드
-  "2023-05-13", // 사인은B
-  "2023-05-01", // 아이돌
+  "2025-06-21", "2025-04-27", "2025-03-14", "2024-12-21",
+  "2024-10-13", "2024-09-01", "2024-05-04", "2024-02-12",
+  "2023-11-15", "2023-10-22", "2023-09-02", "2023-07-30",
+  "2023-07-16", "2023-05-13", "2023-05-01"
 ];
+
 let currentIndex = 0;
 let player;
 let autoplayEnabled = true;
 let randomEnabled = false;
 
-// ✅ 영상 순서 및 날짜 정보 업데이트
 function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
   document.getElementById("video-date").textContent = `업로드 날짜: ${videoDates[currentIndex]}`;
@@ -55,44 +33,54 @@ function onYouTubeIframeAPIReady() {
     width: '640',
     videoId: videoIds[currentIndex],
     events: {
-      'onReady': onPlayerReady
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange  // ✅ 추가됨
     }
   });
 }
 
-function onPlayerReady(event) {
+function onPlayerReady() {
   updateVideoInfo();
 
   document.getElementById("prev-video").addEventListener("click", () => {
     currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
-    player.loadVideoById(videoIds[currentIndex]);
-    updateVideoInfo();
+    loadVideo(currentIndex);
   });
 
   document.getElementById("next-video").addEventListener("click", () => {
     currentIndex = (currentIndex + 1) % videoIds.length;
-    player.loadVideoById(videoIds[currentIndex]);
-    updateVideoInfo();
+    loadVideo(currentIndex);
   });
-}
 
-// ✅ 자동재생 토글 버튼 이벤트
-  document.getElementById("toggle-autoplay").addEventListener("click", () => {
+  const autoplayBtn = document.getElementById("toggle-autoplay");
+  const randomBtn = document.getElementById("toggle-random");
+
+  // ✅ 중복 없이 딱 한 번만 등록
+  autoplayBtn.addEventListener("click", () => {
     autoplayEnabled = !autoplayEnabled;
-    document.getElementById("toggle-autoplay").textContent = `⏯ 자동재생: ${autoplayEnabled ? '켜짐' : '꺼짐'}`;
+    autoplayBtn.textContent = `⏯ 자동재생: ${autoplayEnabled ? '켜짐' : '꺼짐'}`;
+    autoplayBtn.className = `toggle-btn ${autoplayEnabled ? 'on' : 'off'}`;
   });
 
-  // ✅ 랜덤재생 토글 버튼 이벤트
-  document.getElementById("toggle-random").addEventListener("click", () => {
+  randomBtn.addEventListener("click", () => {
     randomEnabled = !randomEnabled;
-    document.getElementById("toggle-random").textContent = `🔀 랜덤재생: ${randomEnabled ? '켜짐' : '꺼짐'}`;
+    randomBtn.textContent = `🔀 랜덤재생: ${randomEnabled ? '켜짐' : '꺼짐'}`;
+    randomBtn.className = `toggle-btn ${randomEnabled ? 'on' : 'off'}`;
   });
 }
 
-// ✅ 영상이 끝났을 때 다음 영상 자동 재생
+// ✅ 영상이 끝났을 때 다음 영상 처리
 function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED) {
-    currentIndex = (currentIndex + 1) % videoIds.length;
+  if (event.data === YT.PlayerState.ENDED && autoplayEnabled) {
+    if (randomEnabled) {
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * videoIds.length);
+      } while (nextIndex === currentIndex); // 현재 영상 제외
+      currentIndex = nextIndex;
+    } else {
+      currentIndex = (currentIndex + 1) % videoIds.length;
+    }
     loadVideo(currentIndex);
   }
 }
