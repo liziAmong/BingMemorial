@@ -2,14 +2,80 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>홈페이지 선택</title>
+  <title>슬라이더 홈</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fefefe;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .card-link {
+      text-decoration: none;
+    }
+
+    .card {
+      width: 250px;
+      height: 160px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    .card-label {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 1.1rem;
+      padding: 10px 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>어디로 들어갈까요?</h1>
+  <h1>무엇을 감상할까요?</h1>
   <div class="menu">
-    <a href="page1.html"><button>📸 이미지 슬라이더</button></a>
-    <a href="page2.html"><button>📺 유튜브 영상 보기</button></a>
+    <a class="card-link" href="page1.html">
+      <div class="card">
+        <img src="images/image1.jpg" alt="이미지 슬라이더">
+        <div class="card-label">📸 이미지 슬라이더</div>
+      </div>
+    </a>
+    <a class="card-link" href="page2.html">
+      <div class="card">
+        <img src="images/image3.jpg" alt="유튜브 영상">
+        <div class="card-label">📺 유튜브 영상 보기</div>
+      </div>
+    </a>
   </div>
 </body>
 </html>
