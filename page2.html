@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>💗유튜브 커버곡</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -107,9 +108,10 @@
     </div>
   </div>
 
-  <!-- YouTube iframe API 먼저 로드 -->
+  <!-- YouTube iframe API 먼저 -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
+  <!-- 유튜브 기능 스크립트 -->
   <script>
     const videoIds = [
       "TkzT-8xNaP8", "G33eHNor1Kc", "48tTGn9QNHA", "Ydvct6uheHI",
@@ -142,13 +144,21 @@
       }
     }
 
-    function getRandomIndex(current) {
-      let index;
-      do {
-        index = Math.floor(Math.random() * videoIds.length);
-      } while (index === current);
-      return index;
-    }
+    window.onYouTubeIframeAPIReady = function () {
+      player = new YT.Player('youtube-player', {
+        height: '360',
+        width: '640',
+        videoId: videoIds[currentIndex],
+        playerVars: {
+          autoplay: 1,
+          mute: 0
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    };
 
     function onPlayerReady() {
       updateVideoInfo();
@@ -189,40 +199,19 @@
       }
     }
 
-    // 이 함수는 iframe API가 로드된 후 반드시 호출됨
-    window.onYouTubeIframeAPIReady = function () {
-      player = new YT.Player('youtube-player', {
-        height: '360',
-        width: '640',
-        videoId: videoIds[currentIndex],
-        playerVars: {
-          autoplay: 1,
-          mute: 0
-        },
-        events: {
-          'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
-        }
-      });
-    };
-
-    // YouTube API가 이미 로드된 경우 대비
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.YT && typeof YT.Player === "function") {
-        window.onYouTubeIframeAPIReady();
-      }
-    });
+    function getRandomIndex(current) {
+      let index;
+      do {
+        index = Math.floor(Math.random() * videoIds.length);
+      } while (index === current);
+      return index;
+    }
 
     // 새로고침 방지
     window.addEventListener("keydown", function (e) {
       if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
         e.preventDefault();
       }
-    });
-
-    // 메인으로 돌아갈 때 unload 이벤트 제거
-    document.getElementById("home-link").addEventListener("click", () => {
-      window.removeEventListener("beforeunload", () => {});
     });
   </script>
 </body>
