@@ -7,20 +7,33 @@
   <style>
     body {
       font-family: 'Nunito', sans-serif;
-      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
-      margin: 0;
-      padding: 0;
+      margin: 20px auto;
+      max-width: 700px;
+      padding: 0 10px;
       color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
+      transition: background 0.8s ease;
+      /* 초기 배경은 노말 배경으로 지정 */
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+    }
+
+    body.normal-bg {
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+    }
+
+    body.rare-bg {
+      background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+    }
+
+    body.special-bg {
+      background: linear-gradient(to bottom, #ff9a9e, #fecfef);
     }
 
     .slider-container {
-      width: 95%;
-      max-width: 800px;
+      width: 100%;
       text-align: center;
       margin-top: 20px;
     }
@@ -88,12 +101,14 @@
       background-color: #87cefa;
       color: white;
       animation: rarity-flash 1s ease-in-out;
+      box-shadow: 0 0 15px 3px #64b5f6;
     }
 
     .rarity-special {
       background-color: #ff69b4;
       color: white;
       animation: rarity-flash 1s ease-in-out;
+      box-shadow: 0 0 20px 4px #ff4081;
     }
 
     @keyframes rarity-flash {
@@ -215,12 +230,12 @@
     }
   </style>
 </head>
-<body>
+<body class="normal-bg">
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
     
     <!-- 가챠 결과 -->
-    <div id="gacha-box" class="gacha-box">-</div>
+    <div id="gacha-box" class="gacha-box rarity-normal">-</div>
 
     <div class="controls">
       <button id="sound-btn">🎲 가챠 돌리기</button>
@@ -268,7 +283,14 @@
       imageElement.src = images[currentIndex];
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
       gachaBox.textContent = "-";
-      gachaBox.className = "gacha-box";
+      gachaBox.className = "gacha-box rarity-normal";
+      document.body.className = "normal-bg";
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+      miniPlayer.style.display = "none";
+      soundButton.disabled = false;
     }
 
     function playGachaEffect() {
@@ -291,6 +313,10 @@
         audioSrc = soundSet.special;
         label = "💖 스페셜 획득!";
       }
+
+      // 배경색 변경
+      document.body.classList.remove("normal-bg", "rare-bg", "special-bg");
+      document.body.classList.add(`${rarity}-bg`);
 
       soundButton.disabled = true;
       gachaBox.textContent = "🔄 로딩 중...";
@@ -346,6 +372,11 @@
       audioPlayer.onended = () => {
         soundButton.disabled = false;
         miniPlayer.style.display = "none";
+        // 배경 원복
+        document.body.classList.remove("normal-bg", "rare-bg", "special-bg");
+        document.body.classList.add("normal-bg");
+        gachaBox.textContent = "-";
+        gachaBox.className = "gacha-box rarity-normal";
       };
     }
 
