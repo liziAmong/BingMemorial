@@ -16,8 +16,7 @@
       align-items: center;
       min-height: 100vh;
       transition: background 0.8s ease;
-      /* 초기 배경은 노말 배경으로 지정 */
-      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff); /* 초기 배경 */
     }
 
     body.normal-bg {
@@ -233,8 +232,7 @@
 <body class="normal-bg">
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
-    
-    <!-- 가챠 결과 -->
+
     <div id="gacha-box" class="gacha-box rarity-normal">-</div>
 
     <div class="controls">
@@ -314,19 +312,18 @@
         label = "💖 스페셜 획득!";
       }
 
-      // 배경색 변경
-      document.body.classList.remove("normal-bg", "rare-bg", "special-bg");
-      document.body.classList.add(`${rarity}-bg`);
-
       soundButton.disabled = true;
       gachaBox.textContent = "🔄 로딩 중...";
       gachaBox.className = "gacha-box rolling";
 
       setTimeout(() => {
+        // 배경색 적용 이 시점에서!
+        document.body.classList.remove("normal-bg", "rare-bg", "special-bg");
+        document.body.classList.add(`${rarity}-bg`);
+
         gachaBox.textContent = label;
         gachaBox.className = `gacha-box rarity-${rarity}`;
         imageElement.className = rarity === "normal" ? "" : `image-${rarity}`;
-
         playAudio(audioSrc, label);
       }, 1000);
     }
@@ -372,36 +369,25 @@
       audioPlayer.onended = () => {
         soundButton.disabled = false;
         miniPlayer.style.display = "none";
-        // 배경 원복
-        document.body.classList.remove("normal-bg", "rare-bg", "special-bg");
-        document.body.classList.add("normal-bg");
+        document.body.className = "normal-bg";
         gachaBox.textContent = "-";
         gachaBox.className = "gacha-box rarity-normal";
       };
     }
 
     document.getElementById("prev-btn").addEventListener("click", () => {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        miniPlayer.style.display = "none";
-      }
+      if (audioPlayer) audioPlayer.pause();
       currentIndex = (currentIndex - 1 + totalItems) % totalItems;
       updateDisplay();
     });
 
     document.getElementById("next-btn").addEventListener("click", () => {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        miniPlayer.style.display = "none";
-      }
+      if (audioPlayer) audioPlayer.pause();
       currentIndex = (currentIndex + 1) % totalItems;
       updateDisplay();
     });
 
-    soundButton.addEventListener("click", () => {
-      playGachaEffect();
-    });
-
+    soundButton.addEventListener("click", playGachaEffect);
     updateDisplay();
   </script>
 </body>
