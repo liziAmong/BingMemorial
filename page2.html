@@ -31,4 +31,19 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="youtube.js"></script>
 </body>
+<script>
+  // 새로고침 단축키 방지
+  window.addEventListener("keydown", function (e) {
+    // F5 키 또는 Ctrl+R
+    if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
+      e.preventDefault();
+    }
+  });
+
+  // 페이지 새로고침 이벤트 방지 (뒤로가기 후 복원 등 포함)
+  window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    e.returnValue = ""; // 일부 브라우저에서는 returnValue 필요
+  });
+</script>
 </html>
