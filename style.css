@@ -1,12 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
 
 body {
-  transform: scale(0.8);
-  transform-origin: top left; /* 축소 기준점 설정 */
-  width: 125%;  /* 축소 후 화면 꽉 채우기 위해 가로 폭 보정 */
-  height: 125%; /* 필요 시 세로도 보정 가능 */
-  overflow-x: hidden; /* 가로 스크롤 숨김 */
-
   font-family: 'Nunito', sans-serif;
   background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
   margin: 0;
