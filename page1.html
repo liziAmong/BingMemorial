@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐰ASMR 음성 가챠</title>
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -13,18 +14,18 @@
       color: #333;
       display: flex;
       flex-direction: column;
-      align-items: center;      /* ✅ 수평 중앙 정렬 */
+      align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
     }
 
     .slider-container {
-      width: 90%;
-      max-width: 1000px;
+      width: 95%;
+      max-width: 800px;
       text-align: center;
-      transform: scale(0.8);               /* ✅ 전체 축소 */
-      transform-origin: center top;        /* ✅ 중앙 기준으로 축소 */
-      margin-top: 30px;
+      transform: scale(0.95);
+      transform-origin: center top;
+      margin-top: 20px;
     }
 
     #main-image {
@@ -38,14 +39,14 @@
     }
 
     .controls {
-      margin-top: 10px;
+      margin-top: 15px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      flex-wrap: nowrap;
+      gap: 15px;
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
     button {
@@ -53,12 +54,12 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px 24px;
-      font-size: 16px;
+      padding: 10px 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
       font-weight: bold;
-      min-width: 120px;
+      min-width: 100px;
     }
 
     button:hover {
@@ -66,17 +67,14 @@
       transform: scale(1.05);
     }
 
-    #rarity-display {
-      min-width: 120px;
-      color: #555;
-    }
-
-    #counter {
-      min-width: 120px;
+    #rarity-display, #counter {
+      min-width: 90px;
+      text-align: center;
+      font-size: 0.95rem;
     }
 
     .home-link {
-      margin: 40px auto;
+      margin: 30px auto;
       text-align: center;
     }
 
@@ -90,14 +88,33 @@
       cursor: pointer;
     }
 
-    /* 레어 배경색 */
+    /* 레어 / 스페셜 효과 */
     body.rare-mode {
       background: linear-gradient(to bottom, #e6f7ff, #fff0f5);
     }
 
-    /* 스페셜 배경색 */
     body.special-mode {
       background: linear-gradient(to bottom, #fffbe6, #ffe6f0);
+    }
+
+    /* 📱 모바일용 미디어 쿼리 */
+    @media (max-width: 480px) {
+      .slider-container {
+        transform: scale(1);
+        width: 100%;
+        padding: 0 10px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 12px;
+        min-width: 90px;
+      }
+
+      #rarity-display, #counter {
+        font-size: 0.9rem;
+        min-width: 80px;
+      }
     }
   </style>
 </head>
@@ -130,10 +147,7 @@
     const rarityDisplay = document.getElementById("rarity-display");
     const counter = document.getElementById("counter");
 
-    // 이미지 목록
     const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
-
-    // 사운드 목록
     const sounds = Array.from({ length: totalItems }, (_, i) => ({
       normal: `sounds/sound${i + 1}_1.mp3`,
       rare: `sounds/sound${i + 1}_2.mp3`,
@@ -165,7 +179,6 @@
 
       new Audio(audioSrc).play();
 
-      // 배경색 + 진동 효과
       if (rarity === "rare") {
         document.body.classList.add("rare-mode");
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -176,7 +189,6 @@
         setTimeout(() => document.body.classList.remove("special-mode"), 2000);
       }
 
-      // 텍스트 표시
       rarityDisplay.textContent = rarity.charAt(0).toUpperCase() + rarity.slice(1);
     }
 
@@ -194,7 +206,6 @@
       playSoundForCurrentIndex();
     });
 
-    // 초기 표시
     updateDisplay();
   </script>
 </body>
