@@ -52,7 +52,8 @@
     }
 
     .card {
-      width: 800px; /* ✅ 가로 20% 축소 반영 */
+      width: 800px;
+      height: auto;
       border-radius: 16px;
       overflow: hidden;
       background-color: var(--card-bg);
@@ -60,6 +61,10 @@
       transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s;
       opacity: 0.95;
       position: relative;
+
+      display: flex;                   /* ✅ 이미지 가운데 정렬용 */
+      justify-content: center;
+      align-items: center;
     }
 
     .card:hover {
@@ -68,13 +73,13 @@
       opacity: 1;
     }
 
- .card img {
-  width: 100%;
-  height: 100%;            /* 카드의 높이에 맞추되 */
-  object-fit: contain;     /* ✅ 비율 유지 + 잘리지 않음 */
-  background-color: #000;  /* 빈 여백에 배경색을 넣고 싶다면 */
-  display: block;
-}
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;           /* ✅ 비율 유지 + 잘리지 않음 */
+      background-color: #000;        /* ✅ 빈 공간 채우기 */
+      display: block;
+    }
 
     .card-label {
       position: absolute;
@@ -89,7 +94,7 @@
 
     @media (max-width: 1024px) {
       .card {
-        width: 80vw; /* ✅ 모바일에서도 20% 축소 반영 */
+        width: 80vw;
       }
     }
   </style>
