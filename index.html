@@ -113,8 +113,22 @@
     </a>
   </div>
 <script>
-  document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
+  // 우클릭 방지
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // 드래그 및 텍스트 선택 방지
+  document.addEventListener('dragstart', e => e.preventDefault());
+  document.addEventListener('selectstart', e => e.preventDefault());
+
+  // 개발자 도구 단축키 방지 (F12, Ctrl+U, Ctrl+Shift+I 등)
+  document.addEventListener('keydown', function (e) {
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+      (e.ctrlKey && ['U', 'S'].includes(e.key))
+    ) {
+      e.preventDefault();
+    }
   });
 </script>
 </body>
