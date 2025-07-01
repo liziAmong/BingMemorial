@@ -42,7 +42,7 @@
 
     .menu {
       display: flex;
-      flex-direction: column; /* ✅ 세로 정렬 */
+      flex-direction: column;
       align-items: center;
       gap: 40px;
     }
@@ -52,7 +52,7 @@
     }
 
     .card {
-      width: 800px;
+      width: 800px; /* ✅ 가로 20% 축소 반영 */
       border-radius: 16px;
       overflow: hidden;
       background-color: var(--card-bg);
@@ -88,7 +88,7 @@
 
     @media (max-width: 1024px) {
       .card {
-        width: 90vw;
+        width: 80vw; /* ✅ 모바일에서도 20% 축소 반영 */
       }
     }
   </style>
@@ -112,24 +112,25 @@
       </div>
     </a>
   </div>
-<script>
-  // 우클릭 방지
-  document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // 드래그 및 텍스트 선택 방지
-  document.addEventListener('dragstart', e => e.preventDefault());
-  document.addEventListener('selectstart', e => e.preventDefault());
+  <script>
+    // 우클릭 방지
+    document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // 개발자 도구 단축키 방지 (F12, Ctrl+U, Ctrl+Shift+I 등)
-  document.addEventListener('keydown', function (e) {
-    if (
-      e.key === 'F12' ||
-      (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
-      (e.ctrlKey && ['U', 'S'].includes(e.key))
-    ) {
-      e.preventDefault();
-    }
-  });
-</script>
+    // 드래그 및 텍스트 선택 방지
+    document.addEventListener('dragstart', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+
+    // 개발자 도구 단축키 방지 (조용히)
+    document.addEventListener('keydown', function (e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && ['U', 'S'].includes(e.key))
+      ) {
+        e.preventDefault();
+      }
+    });
+  </script>
 </body>
 </html>
