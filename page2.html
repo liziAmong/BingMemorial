@@ -1,17 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>💗유튜브 커버곡 </title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>💗유튜브 커버곡</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* 간단한 스타일 예시 */
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 0 10px;
+    }
+    .slider-container {
+      text-align: center;
+    }
+    #youtube-player {
+      margin-bottom: 10px;
+    }
+    #video-info {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .controls button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #toggle-autoplay.on, #toggle-random.on {
+      background-color: #4caf50;
+      color: white;
+    }
+    #toggle-autoplay.off, #toggle-random.off {
+      background-color: #ccc;
+      color: #333;
+    }
+  </style>
 </head>
-<script>
-  window.onbeforeunload = null;
-</script>
 <body>
-<!--
-  <h1>💗유튜브 커버곡 슬라이더</h1>
--->
   <div class="slider-container">
     <div id="youtube-player"></div>
     <div id="video-info">
@@ -22,10 +49,10 @@
       <button id="prev-video">이전 영상</button>
       <button id="next-video">다음 영상</button>
     </div>
-<div style="margin: 20px 0;">
-  <button id="toggle-autoplay">⏯ 자동재생: 켜짐</button>
-  <button id="toggle-random">🔀 랜덤재생: 꺼짐</button>
-</div>
+    <div style="margin: 20px 0;">
+      <button id="toggle-autoplay" class="toggle-btn on">⏯ 자동재생: 켜짐</button>
+      <button id="toggle-random" class="toggle-btn off">🔀 랜덤재생: 꺼짐</button>
+    </div>
     <div class="controls">
       <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
     </div>
@@ -34,5 +61,4 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="youtube.js"></script>
 </body>
-
 </html>
