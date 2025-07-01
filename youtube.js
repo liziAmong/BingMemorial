@@ -29,7 +29,7 @@ function loadVideo(index) {
   }
 }
 
-// ✅ 반드시 전역(global)에 선언해야 작동함
+// 반드시 전역에 선언되어야 함 (YouTube iframe API 요구)
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player('youtube-player', {
     height: '360',
@@ -92,3 +92,10 @@ function getRandomIndex(current) {
   } while (index === current);
   return index;
 }
+
+// 새로고침 방지 (선택사항)
+window.addEventListener("keydown", function (e) {
+  if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
+    e.preventDefault();
+  }
+});
