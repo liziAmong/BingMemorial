@@ -23,82 +23,72 @@ function updateVideoInfo() {
 }
 
 function loadVideo(index) {
-  player.loadVideoById(videoIds[index]);
-  updateVideoInfo();
+  if (player && typeof player.loadVideoById === "function") {
+    player.loadVideoById(videoIds[index]);
+    updateVideoInfo();
+  }
 }
 
-function onYouTubeIframeAPIReady() {
+// ✅ 반드시 전역(global)에 선언해야 작동함
+window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player('youtube-player', {
     height: '360',
     width: '640',
     videoId: videoIds[currentIndex],
     playerVars: {
-      autoplay: 1,   // 자동재생 ON
-      mute: 0        // 음소거 OFF (필요시 1로 변경)
+      autoplay: 1,
+      mute: 0
     },
     events: {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange
     }
   });
-}
+};
 
 function onPlayerReady() {
   updateVideoInfo();
 
   document.getElementById("prev-video").addEventListener("click", () => {
-    if (randomEnabled) {
-      let prevIndex;
-      do {
-        prevIndex = Math.floor(Math.random() * videoIds.length);
-      } while (prevIndex === currentIndex);
-      currentIndex = prevIndex;
-    } else {
-      currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
-    }
+    currentIndex = randomEnabled
+      ? getRandomIndex(currentIndex)
+      : (currentIndex - 1 + videoIds.length) % videoIds.length;
     loadVideo(currentIndex);
   });
 
   document.getElementById("next-video").addEventListener("click", () => {
-    if (randomEnabled) {
-      let nextIndex;
-      do {
-        nextIndex = Math.floor(Math.random() * videoIds.length);
-      } while (nextIndex === currentIndex);
-      currentIndex = nextIndex;
-    } else {
-      currentIndex = (currentIndex + 1) % videoIds.length;
-    }
+    currentIndex = randomEnabled
+      ? getRandomIndex(currentIndex)
+      : (currentIndex + 1) % videoIds.length;
     loadVideo(currentIndex);
   });
 
-  const autoplayBtn = document.getElementById("toggle-autoplay");
-  const randomBtn = document.getElementById("toggle-random");
-
-  autoplayBtn.addEventListener("click", () => {
+  document.getElementById("toggle-autoplay").addEventListener("click", (e) => {
     autoplayEnabled = !autoplayEnabled;
-    autoplayBtn.textContent = `⏯ 자동재생: ${autoplayEnabled ? '켜짐' : '꺼짐'}`;
-    autoplayBtn.className = `toggle-btn ${autoplayEnabled ? 'on' : 'off'}`;
+    e.target.textContent = `⏯ 자동재생: ${autoplayEnabled ? '켜짐' : '꺼짐'}`;
+    e.target.className = `toggle-btn ${autoplayEnabled ? 'on' : 'off'}`;
   });
 
-  randomBtn.addEventListener("click", () => {
+  document.getElementById("toggle-random").addEventListener("click", (e) => {
     randomEnabled = !randomEnabled;
-    randomBtn.textContent = `🔀 랜덤재생: ${randomEnabled ? '켜짐' : '꺼짐'}`;
-    randomBtn.className = `toggle-btn ${randomEnabled ? 'on' : 'off'}`;
+    e.target.textContent = `🔀 랜덤재생: ${randomEnabled ? '켜짐' : '꺼짐'}`;
+    e.target.className = `toggle-btn ${randomEnabled ? 'on' : 'off'}`;
   });
 }
 
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED && autoplayEnabled) {
-    if (randomEnabled) {
-      let nextIndex;
-      do {
-        nextIndex = Math.floor(Math.random() * videoIds.length);
-      } while (nextIndex === currentIndex);
-      currentIndex = nextIndex;
-    } else {
-      currentIndex = (currentIndex + 1) % videoIds.length;
-    }
+    currentIndex = randomEnabled
+      ? getRandomIndex(currentIndex)
+      : (currentIndex + 1) % videoIds.length;
     loadVideo(currentIndex);
   }
+}
+
+function getRandomIndex(current) {
+  let index;
+  do {
+    index = Math.floor(Math.random() * videoIds.length);
+  } while (index === current);
+  return index;
 }
