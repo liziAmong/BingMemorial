@@ -34,11 +34,11 @@ function onYouTubeIframeAPIReady() {
     videoId: videoIds[currentIndex],
     playerVars: {
       autoplay: 1,   // 자동재생 ON
-      mute: 0        // 음소거 ON (자동재생 정책 우회)
+      mute: 0        // 음소거 OFF (필요시 1로 변경)
     },
     events: {
       'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange  // ✅ 추가됨
+      'onStateChange': onPlayerStateChange
     }
   });
 }
@@ -47,19 +47,34 @@ function onPlayerReady() {
   updateVideoInfo();
 
   document.getElementById("prev-video").addEventListener("click", () => {
-    currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
+    if (randomEnabled) {
+      let prevIndex;
+      do {
+        prevIndex = Math.floor(Math.random() * videoIds.length);
+      } while (prevIndex === currentIndex);
+      currentIndex = prevIndex;
+    } else {
+      currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
+    }
     loadVideo(currentIndex);
   });
 
   document.getElementById("next-video").addEventListener("click", () => {
-    currentIndex = (currentIndex + 1) % videoIds.length;
+    if (randomEnabled) {
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * videoIds.length);
+      } while (nextIndex === currentIndex);
+      currentIndex = nextIndex;
+    } else {
+      currentIndex = (currentIndex + 1) % videoIds.length;
+    }
     loadVideo(currentIndex);
   });
 
   const autoplayBtn = document.getElementById("toggle-autoplay");
   const randomBtn = document.getElementById("toggle-random");
 
-  // ✅ 중복 없이 딱 한 번만 등록
   autoplayBtn.addEventListener("click", () => {
     autoplayEnabled = !autoplayEnabled;
     autoplayBtn.textContent = `⏯ 자동재생: ${autoplayEnabled ? '켜짐' : '꺼짐'}`;
@@ -73,14 +88,13 @@ function onPlayerReady() {
   });
 }
 
-// ✅ 영상이 끝났을 때 다음 영상 처리
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED && autoplayEnabled) {
     if (randomEnabled) {
       let nextIndex;
       do {
         nextIndex = Math.floor(Math.random() * videoIds.length);
-      } while (nextIndex === currentIndex); // 현재 영상 제외
+      } while (nextIndex === currentIndex);
       currentIndex = nextIndex;
     } else {
       currentIndex = (currentIndex + 1) % videoIds.length;
