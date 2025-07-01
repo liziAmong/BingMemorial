@@ -4,45 +4,159 @@
   <meta charset="UTF-8">
   <title>🐰ASMR 음성 가챠</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      transform: scale(0.9);
+      transform-origin: top left;
+      width: 125%;
+      height: auto;
+      overflow-x: hidden;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
 
-<style>
-  body {
-    transform: scale(0.9);
-    transform-origin: top left;
-    width: 125%;
-    height: auto;
-    overflow-x: hidden;
-  }
+    .slider-container {
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-  .slider-container {
-    text-align: center; /* 버튼과 기타 요소도 중앙 정렬 */
-  }
+    #main-image {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
 
-  #main-image {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto; /* 이미지를 수평 중앙 정렬 */
-  }
-</style>
-  
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #ff69b4;
+      transform: scale(1.05);
+    }
+
+    #counter {
+      margin: 10px;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .home-link {
+      margin: 40px auto;
+      text-align: center;
+    }
+
+    .home-link button {
+      background-color: #bbb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div class="slider-container">
+    <!-- 이미지 -->
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지">
-<div id="counter" style="margin: 10px; font-weight: bold; font-size: 1.2rem;">1 / 20</div>
+
+    <!-- 인덱스 번호 -->
+    <div id="counter">1 / 20</div>
+
+    <!-- 이전/다음 버튼 -->
     <div class="controls">
-      <button id="prev-btn">이전</button>
-      <button id="next-btn">다음</button>
+      <button id="prev-btn">◀ 이전</button>
+      <button id="next-btn">다음 ▶</button>
     </div>
+
+    <!-- 소리 재생 버튼 -->
     <button id="sound-btn">🔊 소리 재생</button>
   </div>
-    <div class="controls">
-      <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
-    </div>
 
+  <!-- 메인으로 돌아가기 버튼 -->
+  <div class="home-link">
+    <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
+  </div>
 
-  <script src="script.js"></script>
+  <!-- 스크립트 -->
+  <script>
+    const totalItems = 20;
+    let currentIndex = 0;
+
+    const imageElement = document.getElementById("main-image");
+    const soundButton = document.getElementById("sound-btn");
+
+    // 이미지 목록
+    const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
+
+    // 이미지별 사운드 경로
+    const sounds = Array.from({ length: totalItems }, (_, i) => ({
+      default1: `sounds/sound${i + 1}_1.mp3`,
+      default2: `sounds/sound${i + 1}_2.mp3`,
+      special:  `sounds/sound${i + 1}_special.mp3`
+    }));
+
+    function updateDisplay() {
+      imageElement.src = images[currentIndex];
+      const counter = document.getElementById("counter");
+      counter.textContent = `${currentIndex + 1} / ${totalItems}`;
+    }
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay();
+    });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % totalItems;
+      updateDisplay();
+    });
+
+    soundButton.addEventListener("click", () => {
+      const r = Math.random();
+      let audioSrc;
+      const soundSet = sounds[currentIndex];
+
+      if (r < 0.45) {
+        audioSrc = soundSet.default1;
+      } else if (r < 0.9) {
+        audioSrc = soundSet.default2;
+      } else {
+        audioSrc = soundSet.special;
+      }
+
+      const audio = new Audio(audioSrc);
+      audio.play();
+    });
+
+    // 초기 표시
+    updateDisplay();
+  </script>
 </body>
 </html>
