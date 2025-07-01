@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>🐰ASMR 음성 가챠</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      transform: scale(0.9);
+      transform: scale(0.72); /* 20% 줄임 (0.9 * 0.8 = 0.72) */
       transform-origin: top left;
       width: 125%;
       height: auto;
@@ -30,17 +30,20 @@
       height: auto;
       object-fit: contain;
       display: block;
-      margin: 0 auto;
+      margin: 0 auto 15px auto;
       border-radius: 20px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
 
     .controls {
-      margin-top: 20px;
+      margin-top: 10px;
       display: flex;
       justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: nowrap;
+      font-weight: bold;
+      font-size: 1.1rem;
     }
 
     button {
@@ -53,6 +56,7 @@
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
       font-weight: bold;
+      min-width: 120px;
     }
 
     button:hover {
@@ -60,10 +64,13 @@
       transform: scale(1.05);
     }
 
+    #rarity-display {
+      min-width: 120px;
+      color: #555;
+    }
+
     #counter {
-      margin: 10px;
-      font-weight: bold;
-      font-size: 1.2rem;
+      min-width: 120px;
     }
 
     .home-link {
@@ -95,19 +102,16 @@
 <body>
   <div class="slider-container">
     <!-- 이미지 -->
-    <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지">
+    <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
 
-    <!-- 인덱스 번호 -->
-    <div id="counter">1 / 20</div>
-
-    <!-- 이전/다음 버튼 -->
+    <!-- 버튼 + 텍스트 + 페이지 이동 -->
     <div class="controls">
+      <button id="sound-btn">🔊 소리 재생</button>
+      <div id="rarity-display">-</div>
       <button id="prev-btn">◀ 이전</button>
+      <div id="counter">1 / 20</div>
       <button id="next-btn">다음 ▶</button>
     </div>
-
-    <!-- 소리 재생 버튼 -->
-    <button id="sound-btn">🔊 소리 재생</button>
   </div>
 
   <!-- 메인으로 돌아가기 버튼 -->
@@ -115,41 +119,32 @@
     <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
   </div>
 
-  <!-- 스크립트 -->
   <script>
     const totalItems = 20;
     let currentIndex = 0;
 
     const imageElement = document.getElementById("main-image");
     const soundButton = document.getElementById("sound-btn");
+    const rarityDisplay = document.getElementById("rarity-display");
+    const counter = document.getElementById("counter");
 
     // 이미지 목록
     const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
 
-    // 이미지별 사운드 경로
+    // 사운드 목록
     const sounds = Array.from({ length: totalItems }, (_, i) => ({
       normal: `sounds/sound${i + 1}_1.mp3`,
       rare: `sounds/sound${i + 1}_2.mp3`,
-      special:  `sounds/sound${i + 1}_special.mp3`
+      special: `sounds/sound${i + 1}_special.mp3`,
     }));
 
     function updateDisplay() {
       imageElement.src = images[currentIndex];
-      const counter = document.getElementById("counter");
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
+      rarityDisplay.textContent = "-";
     }
 
-    document.getElementById("prev-btn").addEventListener("click", () => {
-      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-      updateDisplay();
-    });
-
-    document.getElementById("next-btn").addEventListener("click", () => {
-      currentIndex = (currentIndex + 1) % totalItems;
-      updateDisplay();
-    });
-
-    soundButton.addEventListener("click", () => {
+    function playSoundForCurrentIndex() {
       const roll = Math.random();
       const soundSet = sounds[currentIndex];
       let rarity = "normal";
@@ -166,10 +161,9 @@
         audioSrc = soundSet.special;
       }
 
-      // 사운드 재생
       new Audio(audioSrc).play();
 
-      // 효과 적용
+      // 배경 및 진동 효과
       if (rarity === "rare") {
         document.body.classList.add("rare-mode");
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -179,6 +173,23 @@
         if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
         setTimeout(() => document.body.classList.remove("special-mode"), 2000);
       }
+
+      // 등급 텍스트 표시
+      rarityDisplay.textContent = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+    }
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay();
+    });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % totalItems;
+      updateDisplay();
+    });
+
+    soundButton.addEventListener("click", () => {
+      playSoundForCurrentIndex();
     });
 
     // 초기 표시
