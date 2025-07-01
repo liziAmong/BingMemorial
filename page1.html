@@ -1,48 +1,170 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>🐰ASMR 음성 가챠</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📸 아트북 음성 페이지</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+      margin: 0;
+      padding: 0;
+      color: #333;
+      text-align: center;
+    }
 
-<style>
-  body {
-    transform: scale(0.9);
-    transform-origin: top left;
-    width: 125%;
-    height: auto;
-    overflow-x: hidden;
-  }
+    #main-image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 30px auto 20px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
 
-  .slider-container {
-    text-align: center; /* 버튼과 기타 요소도 중앙 정렬 */
-  }
+    .audio-layout {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      padding: 20px;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-  #main-image {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto; /* 이미지를 수평 중앙 정렬 */
-  }
-</style>
-  
+    .play-btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 30px 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .random-voices {
+      flex: 2;
+      min-width: 280px;
+      background: white;
+      border: 2px solid #ffc0cb;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3);
+    }
+
+    .voice {
+      margin: 10px 0;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .pagination {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pagination button {
+      background-color: #87ceeb;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .page-number {
+      margin-top: 5px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="slider-container">
-    <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지">
-<div id="counter" style="margin: 10px; font-weight: bold; font-size: 1.2rem;">1 / 20</div>
-    <div class="controls">
-      <button id="prev-btn">이전</button>
-      <button id="next-btn">다음</button>
+
+  <!-- 상단 이미지 -->
+  <img id="main-image" src="images/image0.jpg" alt="메인 아트북 이미지" />
+
+  <!-- 음성 및 컨트롤 영역 -->
+  <div class="audio-layout">
+
+    <!-- 소리 재생 버튼 -->
+    <button class="play-btn" onclick="playRandomVoices()">🔊 소리 재생</button>
+
+    <!-- 랜덤 음성 표시 -->
+    <div class="random-voices" id="voiceContainer">
+      <div class="voice">🎵 음성 1</div>
+      <div class="voice">🎵 음성 2</div>
+      <div class="voice">🎵 음성 3</div>
     </div>
-    <button id="sound-btn">🔊 소리 재생</button>
+
+    <!-- 페이지 네비게이션 -->
+    <div class="pagination">
+      <button onclick="goPrev()">◀ 이전</button>
+      <div class="page-number" id="pageNumber">1 / 5</div>
+      <button onclick="goNext()">다음 ▶</button>
+    </div>
   </div>
-    <div class="controls">
-      <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
-    </div>
 
+  <script>
+    const allVoices = [
+      "🌸 봄날의 속삭임", "🎧 달빛 속 이야기", "🌙 꿈속의 너",
+      "🍂 바람의 노래", "🦋 푸른 새벽", "🎶 네 목소리",
+      "🌊 파도 위 멜로디", "🌠 별빛과 함께", "🍁 고요한 밤",
+    ];
 
-  <script src="script.js"></script>
+    function playRandomVoices() {
+      const voiceContainer = document.getElementById("voiceContainer");
+      voiceContainer.innerHTML = ""; // 초기화
+      const random = [...allVoices].sort(() => 0.5 - Math.random()).slice(0, 3);
+
+      random.forEach(v => {
+        const div = document.createElement("div");
+        div.className = "voice";
+        div.textContent = v;
+        voiceContainer.appendChild(div);
+      });
+
+      // 실제 음성 재생 로직은 여기에 연결
+      // 예: new Audio('path/to/audio.mp3').play();
+    }
+
+    let currentPage = 1;
+    const totalPages = 5;
+
+    function updatePageNumber() {
+      document.getElementById("pageNumber").textContent = `${currentPage} / ${totalPages}`;
+    }
+
+    function goPrev() {
+      if (currentPage > 1) {
+        currentPage--;
+        updatePageNumber();
+      }
+    }
+
+    function goNext() {
+      if (currentPage < totalPages) {
+        currentPage++;
+        updatePageNumber();
+      }
+    }
+  </script>
 </body>
 </html>
