@@ -63,7 +63,7 @@ h1 {
 }
 
 img {
-  max-width: 80%;
+  max-width: 100%;
   border: 5px solid #87ceeb;
   border-radius: 15px;
   animation: fadeIn 1s ease;
