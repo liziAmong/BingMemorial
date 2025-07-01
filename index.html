@@ -51,34 +51,11 @@
       text-decoration: none;
     }
 
-    .card {
-      width: 800px;
-      height: auto;
-      border-radius: 16px;
-      overflow: hidden;
-      background-color: var(--card-bg);
-      box-shadow: 0 6px 15px var(--card-shadow);
-      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s;
-      opacity: 0.95;
-      position: relative;
-
-      display: flex;                   /* ✅ 이미지 가운데 정렬용 */
-      justify-content: center;
-      align-items: center;
-    }
 
     .card:hover {
       transform: translateY(-12px) scale(1.02);
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
       opacity: 1;
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;           /* ✅ 비율 유지 + 잘리지 않음 */
-      background-color: #000;        /* ✅ 빈 공간 채우기 */
-      display: block;
     }
 
     .card-label {
@@ -103,20 +80,19 @@
   <h1>🐰💗 Bing Pages</h1>
   <div class="menu">
     <!-- 아트북 보기 -->
-    <a class="card-link" href="page1.html">
-      <div class="card" style="height: 700px">
-        <img src="images/image0.jpg" alt="아트북 보기" />
-        <div class="card-label">📸 아트북 보기</div>
-      </div>
-    </a>
+   <a class="card-link" href="page1.html">
+  <div class="card">
+    <img src="images/image0.jpg" alt="아트북 보기" />
+    <div class="card-label">📸 아트북 보기</div>
+  </div>
+</a>
 
-    <!-- 유튜브 커버곡 보기 -->
-    <a class="card-link" href="page2.html">
-      <div class="card" style="height: 250px">
-        <img src="images/image00.jpg" alt="유튜브 커버곡 보기" />
-        <div class="card-label">📺 유튜브 커버곡 보기</div>
-      </div>
-    </a>
+<a class="card-link" href="page2.html">
+  <div class="card">
+    <img src="images/image00.jpg" alt="유튜브 커버곡 보기" />
+    <div class="card-label">📺 유튜브 커버곡 보기</div>
+  </div>
+</a>
   </div>
 
   <script>
