@@ -36,24 +36,6 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* 이미지 등급 이펙트 */
-    .image-rare {
-      transform: scale(1.02);
-      box-shadow: 0 0 20px rgba(135, 206, 250, 0.7);
-    }
-
-    .image-special {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 105, 180, 0.9);
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.7); }
-      50% { box-shadow: 0 0 30px rgba(255, 105, 180, 1); }
-      100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.7); }
-    }
-
     .controls {
       margin-top: 15px;
       display: flex;
@@ -87,28 +69,14 @@
       opacity: 0.7;
     }
 
-    #sound-btn.loading {
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    #rarity-display {
-      font-size: 1.4rem;
-      padding: 10px 18px;
-      border-radius: 20px;
+    .gacha-box {
+      margin: 20px auto;
+      min-height: 60px;
+      font-size: 1.8rem;
       font-weight: bold;
-      text-align: center;
-      min-width: 100px;
-      animation: rarityPop 0.5s ease;
-    }
-
-    @keyframes rarityPop {
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1.1); opacity: 1; }
+      padding: 12px 20px;
+      border-radius: 18px;
+      transition: all 0.4s ease;
     }
 
     .rarity-normal {
@@ -119,11 +87,29 @@
     .rarity-rare {
       background-color: #87cefa;
       color: white;
+      animation: rarity-flash 1s ease-in-out;
     }
 
     .rarity-special {
       background-color: #ff69b4;
       color: white;
+      animation: rarity-flash 1s ease-in-out;
+    }
+
+    @keyframes rarity-flash {
+      0% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes gacha-roll {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50% { transform: scale(0.9) rotate(20deg); opacity: 0.7; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .rolling {
+      animation: gacha-roll 0.6s ease-in-out;
     }
 
     #counter {
@@ -147,14 +133,6 @@
       cursor: pointer;
     }
 
-    body.rare-mode {
-      background: linear-gradient(to bottom, #e6f7ff, #fff0f5);
-    }
-
-    body.special-mode {
-      background: linear-gradient(to bottom, #fffbe6, #ffe6f0);
-    }
-
     @media (max-width: 480px) {
       .slider-container {
         width: 100%;
@@ -167,9 +145,9 @@
         min-width: 90px;
       }
 
-      #rarity-display, #counter {
-        font-size: 0.9rem;
-        min-width: 80px;
+      .gacha-box {
+        font-size: 1.2rem;
+        padding: 8px 12px;
       }
     }
   </style>
@@ -177,9 +155,12 @@
 <body>
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
+    
+    <!-- 가챠 결과 -->
+    <div id="gacha-box" class="gacha-box">-</div>
+
     <div class="controls">
-      <button id="sound-btn">🔊 소리 재생</button>
-      <div id="rarity-display">-</div>
+      <button id="sound-btn">🎲 가챠 돌리기</button>
       <button id="prev-btn">◀ 이전</button>
       <div id="counter">1 / 20</div>
       <button id="next-btn">다음 ▶</button>
@@ -195,8 +176,8 @@
     let currentIndex = 0;
 
     const imageElement = document.getElementById("main-image");
+    const gachaBox = document.getElementById("gacha-box");
     const soundButton = document.getElementById("sound-btn");
-    const rarityDisplay = document.getElementById("rarity-display");
     const counter = document.getElementById("counter");
 
     const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
@@ -209,50 +190,56 @@
     function updateDisplay() {
       imageElement.src = images[currentIndex];
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
-      rarityDisplay.textContent = "-";
-      rarityDisplay.className = "";
-      imageElement.className = "";
+      gachaBox.textContent = "-";
+      gachaBox.className = "gacha-box";
     }
 
-    function playSoundForCurrentIndex() {
+    function playGachaEffect() {
       const roll = Math.random();
       const soundSet = sounds[currentIndex];
       let rarity = "normal";
       let audioSrc = soundSet.normal;
+      let label = "노말";
 
       if (roll < 0.5) {
         rarity = "normal";
+        audioSrc = soundSet.normal;
+        label = "노말 🎵";
       } else if (roll < 0.8) {
         rarity = "rare";
         audioSrc = soundSet.rare;
+        label = "🌟 레어 등장!";
       } else {
         rarity = "special";
         audioSrc = soundSet.special;
+        label = "💖 스페셜 획득!";
       }
 
-      // UI 효과 적용
+      // UI 잠금 + 회전 효과
       soundButton.disabled = true;
-      rarityDisplay.textContent = rarity.toUpperCase();
-      rarityDisplay.className = `rarity-${rarity}`;
-      imageElement.className = `image-${rarity}`;
+      gachaBox.textContent = "🔄 로딩 중...";
+      gachaBox.className = "gacha-box rolling";
 
-      if (rarity === "rare") {
-        document.body.classList.add("rare-mode");
-        navigator.vibrate?.([100, 50, 100]);
-        setTimeout(() => document.body.classList.remove("rare-mode"), 1500);
-      }
+      // 1초 후 결과 표시
+      setTimeout(() => {
+        gachaBox.textContent = label;
+        gachaBox.className = `gacha-box rarity-${rarity}`;
 
-      if (rarity === "special") {
-        document.body.classList.add("special-mode");
-        navigator.vibrate?.([200, 100, 200]);
-        setTimeout(() => document.body.classList.remove("special-mode"), 2000);
-      }
+        // 이미지 강조
+        imageElement.className = rarity === "normal" ? "" : `image-${rarity}`;
 
-      const audio = new Audio(audioSrc);
-      audio.play();
-      audio.onended = () => {
-        soundButton.disabled = false;
-      };
+        const audio = new Audio(audioSrc);
+        audio.play();
+        audio.onended = () => {
+          soundButton.disabled = false;
+        };
+
+        // 진동
+        if (rarity !== "normal" && navigator.vibrate) {
+          navigator.vibrate(rarity === "rare" ? [100, 50, 100] : [200, 100, 200]);
+        }
+
+      }, 1000);
     }
 
     document.getElementById("prev-btn").addEventListener("click", () => {
@@ -266,7 +253,7 @@
     });
 
     soundButton.addEventListener("click", () => {
-      playSoundForCurrentIndex();
+      playGachaEffect();
     });
 
     updateDisplay();
