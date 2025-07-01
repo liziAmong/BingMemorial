@@ -112,7 +112,8 @@ button:hover {
 }
 
 .card {
-  width: 800px;             /* 가로 크기 고정 또는 원하는 값 */
+  width: 720px;      /* 기존 800px에서 10% 감소 */
+  height: auto;      /* 이미지 비율에 맞게 자동 조절 */
   border-radius: 16px;
   overflow: hidden;
   background-color: var(--card-bg);
@@ -121,16 +122,17 @@ button:hover {
   opacity: 0.95;
   position: relative;
 
-  display: inline-block;    /* 이미지 크기에 따라 크기 결정 */
+  display: inline-block;
 }
 
 .card img {
-  display: block;
-  width: 100%;             /* 가로 100%로 채우고 */
-  height: auto;            /* 세로는 비율 맞게 자동 */
-  object-fit: contain;     /* 비율 유지하며 잘리지 않게 */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
   background-color: #000;
+  display: block;
 }
+
 
 .toggle-btn {
   padding: 10px 20px;
