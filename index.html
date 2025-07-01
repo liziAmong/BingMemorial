@@ -51,13 +51,20 @@
       text-decoration: none;
     }
 
-   .card {
+    .card {
       width: 800px;
-      border-radius: 20px;
+      height: auto;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      background-color: var(--card-bg);
+      box-shadow: 0 6px 15px var(--card-shadow);
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s;
+      opacity: 0.95;
       position: relative;
+
+      display: flex;                   /* ✅ 이미지 가운데 정렬용 */
+      justify-content: center;
+      align-items: center;
     }
 
     .card:hover {
@@ -66,9 +73,11 @@
       opacity: 1;
     }
 
-     .card img {
+    .card img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: contain;           /* ✅ 비율 유지 + 잘리지 않음 */
+      background-color: #000;        /* ✅ 빈 공간 채우기 */
       display: block;
     }
 
@@ -95,7 +104,7 @@
   <div class="menu">
     <!-- 아트북 보기 -->
     <a class="card-link" href="page1.html">
-      <div class="card">
+      <div class="card" style="height: 700px">
         <img src="images/image0.jpg" alt="아트북 보기" />
         <div class="card-label">📸 아트북 보기</div>
       </div>
@@ -103,7 +112,7 @@
 
     <!-- 유튜브 커버곡 보기 -->
     <a class="card-link" href="page2.html">
-      <div class="card">
+      <div class="card" style="height: 250px">
         <img src="images/image00.jpg" alt="유튜브 커버곡 보기" />
         <div class="card-label">📺 유튜브 커버곡 보기</div>
       </div>
