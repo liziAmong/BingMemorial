@@ -5,7 +5,6 @@
   <title>💗유튜브 커버곡</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* 간단한 스타일 예시 */
     body {
       font-family: Arial, sans-serif;
       max-width: 700px;
@@ -54,21 +53,35 @@
       <button id="toggle-random" class="toggle-btn off">🔀 랜덤재생: 꺼짐</button>
     </div>
     <div class="controls">
-      <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
+      <a href="index.html" id="home-link"><button>🏠 메인으로 돌아가기</button></a>
     </div>
   </div>
-  
+
+  <!-- YouTube API -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="youtube.js"></script>
 
-<script>
-// ✅ F5, Ctrl+R 새로고침만 방지
-window.addEventListener("keydown", function (e) {
-  if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
-    e.preventDefault();
-  }
-});
+  <script>
+    // 새로고침 방지
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
+        e.preventDefault();
+      }
+    });
 
-</script>
+    // 페이지 이탈 경고 비활성화: 필요 시 아래 주석 제거하여 다시 활성화 가능
+    /*
+    function handleBeforeUnload(e) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    */
+
+    // 홈 버튼 누르면 beforeunload 이벤트 제거 (안 뜨게 처리)
+    document.getElementById("home-link").addEventListener("click", () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    });
+  </script>
 </body>
 </html>
