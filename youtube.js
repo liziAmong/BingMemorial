@@ -34,7 +34,7 @@ function onYouTubeIframeAPIReady() {
     videoId: videoIds[currentIndex],
     playerVars: {
       autoplay: 1,   // 자동재생 ON
-      mute: 1        // 음소거 ON (자동재생 정책 우회)
+      mute: 0        // 음소거 ON (자동재생 정책 우회)
     },
     events: {
       'onReady': onPlayerReady,
