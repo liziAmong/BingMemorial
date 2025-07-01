@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🐰ASMR 음성 가챠</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: 'Nunito', sans-serif;
@@ -23,8 +22,6 @@
       width: 95%;
       max-width: 800px;
       text-align: center;
-      transform: scale(0.95);
-      transform-origin: center top;
       margin-top: 20px;
     }
 
@@ -36,6 +33,25 @@
       margin: 0 auto 15px auto;
       border-radius: 20px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* 이미지 등급 이펙트 */
+    .image-rare {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(135, 206, 250, 0.7);
+    }
+
+    .image-special {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.9);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.7); }
+      50% { box-shadow: 0 0 30px rgba(255, 105, 180, 1); }
+      100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.7); }
     }
 
     .controls {
@@ -45,8 +61,6 @@
       justify-content: center;
       align-items: center;
       gap: 15px;
-      font-weight: bold;
-      font-size: 1rem;
     }
 
     button {
@@ -62,12 +76,57 @@
       min-width: 100px;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background-color: #ff69b4;
       transform: scale(1.05);
     }
 
-    #rarity-display, #counter {
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #sound-btn.loading {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #rarity-display {
+      font-size: 1.4rem;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      text-align: center;
+      min-width: 100px;
+      animation: rarityPop 0.5s ease;
+    }
+
+    @keyframes rarityPop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .rarity-normal {
+      background-color: #f0f0f0;
+      color: #555;
+    }
+
+    .rarity-rare {
+      background-color: #87cefa;
+      color: white;
+    }
+
+    .rarity-special {
+      background-color: #ff69b4;
+      color: white;
+    }
+
+    #counter {
       min-width: 90px;
       text-align: center;
       font-size: 0.95rem;
@@ -88,7 +147,6 @@
       cursor: pointer;
     }
 
-    /* 레어 / 스페셜 효과 */
     body.rare-mode {
       background: linear-gradient(to bottom, #e6f7ff, #fff0f5);
     }
@@ -97,10 +155,8 @@
       background: linear-gradient(to bottom, #fffbe6, #ffe6f0);
     }
 
-    /* 📱 모바일용 미디어 쿼리 */
     @media (max-width: 480px) {
       .slider-container {
-        transform: scale(1);
         width: 100%;
         padding: 0 10px;
       }
@@ -120,10 +176,7 @@
 </head>
 <body>
   <div class="slider-container">
-    <!-- 이미지 -->
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
-
-    <!-- 버튼 + 텍스트 + 페이지 이동 -->
     <div class="controls">
       <button id="sound-btn">🔊 소리 재생</button>
       <div id="rarity-display">-</div>
@@ -133,7 +186,6 @@
     </div>
   </div>
 
-  <!-- 메인으로 돌아가기 버튼 -->
   <div class="home-link">
     <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
   </div>
@@ -158,6 +210,8 @@
       imageElement.src = images[currentIndex];
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
       rarityDisplay.textContent = "-";
+      rarityDisplay.className = "";
+      imageElement.className = "";
     }
 
     function playSoundForCurrentIndex() {
@@ -168,7 +222,6 @@
 
       if (roll < 0.5) {
         rarity = "normal";
-        audioSrc = soundSet.normal;
       } else if (roll < 0.8) {
         rarity = "rare";
         audioSrc = soundSet.rare;
@@ -177,19 +230,29 @@
         audioSrc = soundSet.special;
       }
 
-      new Audio(audioSrc).play();
+      // UI 효과 적용
+      soundButton.disabled = true;
+      rarityDisplay.textContent = rarity.toUpperCase();
+      rarityDisplay.className = `rarity-${rarity}`;
+      imageElement.className = `image-${rarity}`;
 
       if (rarity === "rare") {
         document.body.classList.add("rare-mode");
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        navigator.vibrate?.([100, 50, 100]);
         setTimeout(() => document.body.classList.remove("rare-mode"), 1500);
-      } else if (rarity === "special") {
+      }
+
+      if (rarity === "special") {
         document.body.classList.add("special-mode");
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        navigator.vibrate?.([200, 100, 200]);
         setTimeout(() => document.body.classList.remove("special-mode"), 2000);
       }
 
-      rarityDisplay.textContent = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+      const audio = new Audio(audioSrc);
+      audio.play();
+      audio.onended = () => {
+        soundButton.disabled = false;
+      };
     }
 
     document.getElementById("prev-btn").addEventListener("click", () => {
