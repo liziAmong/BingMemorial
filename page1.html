@@ -16,7 +16,7 @@
       align-items: center;
       min-height: 100vh;
       transition: background 0.8s ease;
-      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff); /* 초기 배경 */
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
     }
 
     body.normal-bg {
@@ -138,7 +138,7 @@
     }
 
     .home-link button {
-      background-color: #ffb6c1;  /* 💗 밝은 핑크 */
+      background-color: #ffb6c1;
       color: white;
       border: none;
       border-radius: 12px;
@@ -202,7 +202,7 @@
       cursor: pointer;
     }
 
-    #pause-btn {
+    #pause-btn, #close-btn {
       background: none;
       border: none;
       font-size: 1.2rem;
@@ -253,6 +253,7 @@
       <div id="mini-player-title">🔊 재생 중...</div>
       <input type="range" id="progress-bar" value="0" step="1" min="0" max="100" />
       <button id="pause-btn">⏸️</button>
+      <button id="close-btn">❌</button>
     </div>
   </div>
 
@@ -268,6 +269,7 @@
     const miniPlayer = document.getElementById("mini-player");
     const progressBar = document.getElementById("progress-bar");
     const pauseBtn = document.getElementById("pause-btn");
+    const closeBtn = document.getElementById("close-btn");
     const miniTitle = document.getElementById("mini-player-title");
 
     const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
@@ -317,13 +319,9 @@
       gachaBox.className = "gacha-box rolling";
 
       setTimeout(() => {
-        // 배경색 적용 이 시점에서!
-        document.body.classList.remove("normal-bg", "rare-bg", "special-bg");
-        document.body.classList.add(`${rarity}-bg`);
-
+        document.body.className = `${rarity}-bg`;
         gachaBox.textContent = label;
         gachaBox.className = `gacha-box rarity-${rarity}`;
-        imageElement.className = rarity === "normal" ? "" : `image-${rarity}`;
         playAudio(audioSrc, label);
       }, 1000);
     }
@@ -374,6 +372,19 @@
         gachaBox.className = "gacha-box rarity-normal";
       };
     }
+
+    // ✅ 닫기 버튼 기능
+    closeBtn.addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+      miniPlayer.style.display = "none";
+      soundButton.disabled = false;
+      document.body.className = "normal-bg";
+      gachaBox.textContent = "-";
+      gachaBox.className = "gacha-box rarity-normal";
+    });
 
     document.getElementById("prev-btn").addEventListener("click", () => {
       if (audioPlayer) audioPlayer.pause();
