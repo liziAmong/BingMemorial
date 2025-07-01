@@ -147,7 +147,6 @@
       cursor: pointer;
     }
 
-    /* 미니 플레이어 스타일 */
     #mini-player {
       position: fixed;
       bottom: 20px;
@@ -169,11 +168,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
     }
 
     #mini-player-title {
-      flex: 1;
+      flex: 2;
       font-weight: bold;
       font-size: 1rem;
       color: #444;
@@ -229,7 +228,8 @@
     }
   </style>
 </head>
-<body class="normal-bg">
+
+<body class="normal-bg" oncontextmenu="return false">
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
 
@@ -247,7 +247,6 @@
     <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
   </div>
 
-  <!-- 미니 플레이어 -->
   <div id="mini-player">
     <div class="mini-player-content">
       <div id="mini-player-title">🔊 재생 중...</div>
@@ -257,15 +256,30 @@
     </div>
   </div>
 
+  <!-- ✅ 보안 차단 스크립트 -->
+  <script>
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('paste', e => e.preventDefault());
+    document.addEventListener('keydown', function (e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && e.key === 'U')
+      ) {
+        e.preventDefault();
+      }
+    });
+  </script>
+
+  <!-- ✅ 가챠 + 오디오 플레이어 스크립트 -->
   <script>
     const totalItems = 20;
     let currentIndex = 0;
-
     const imageElement = document.getElementById("main-image");
     const gachaBox = document.getElementById("gacha-box");
     const soundButton = document.getElementById("sound-btn");
     const counter = document.getElementById("counter");
-
     const miniPlayer = document.getElementById("mini-player");
     const progressBar = document.getElementById("progress-bar");
     const pauseBtn = document.getElementById("pause-btn");
@@ -373,7 +387,6 @@
       };
     }
 
-    // ✅ 닫기 버튼 기능
     closeBtn.addEventListener("click", () => {
       if (audioPlayer) {
         audioPlayer.pause();
