@@ -18,29 +18,13 @@
       text-align: center;
     }
 
-    /* ✅ 반응형 유튜브 플레이어 */
     #youtube-player {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%; /* 16:9 비율 유지 */
-      height: 0;
       margin-bottom: 10px;
-      overflow: hidden;
-    }
-
-    #youtube-player iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
     }
 
     #video-info {
       margin-bottom: 10px;
       font-weight: bold;
-      font-size: 1rem;
     }
 
     .controls {
@@ -61,7 +45,6 @@
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
-      min-width: 130px;
     }
 
     .controls button:hover {
@@ -93,30 +76,6 @@
     #home-link button:hover {
       background-color: #ff69b4;
       transform: scale(1.05);
-    }
-
-    /* ✅ 모바일 대응 */
-    @media (max-width: 480px) {
-      body {
-        font-size: 14px;
-        padding: 0 12px;
-      }
-
-      #video-info {
-        font-size: 0.95rem;
-      }
-
-      .controls {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .controls button,
-      #home-link button {
-        width: 100%;
-        font-size: 0.95rem;
-        padding: 10px;
-      }
     }
   </style>
 </head>
