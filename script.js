@@ -16,6 +16,10 @@ const sounds = Array.from({ length: totalItems }, (_, i) => ({
 
 function updateDisplay() {
   imageElement.src = images[currentIndex];
+
+ // ✅ 인덱스 표시 업데이트
+  const counter = document.getElementById("counter");
+  counter.textContent = `${currentIndex + 1} / ${totalItems}`;
 }
 
 document.getElementById("prev-btn").addEventListener("click", () => {
