@@ -2,86 +2,376 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>💗유튜브 커버곡</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🐰ASMR 음성 가챠</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 20px auto;
-      padding: 0 10px;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+      margin: 20px auto;          /* 좌우 중앙 정렬, 상하 20px */
+      max-width: 700px;           /* 페이지 2와 동일 최대 너비 */
+      padding: 0 10px;            /* 좌우 안쪽 여백 */
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
+
     .slider-container {
+      width: 100%;               /* 부모 너비에 맞춤 */
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #main-image {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 15px auto;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+
+    button {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      font-weight: bold;
+      min-width: 100px;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #ff69b4;
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .gacha-box {
+      margin: 20px auto;
+      min-height: 60px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 18px;
+      transition: all 0.4s ease;
+    }
+
+    .rarity-normal {
+      background-color: #f0f0f0;
+      color: #555;
+    }
+
+    .rarity-rare {
+      background-color: #87cefa;
+      color: white;
+      animation: rarity-flash 1s ease-in-out;
+    }
+
+    .rarity-special {
+      background-color: #ff69b4;
+      color: white;
+      animation: rarity-flash 1s ease-in-out;
+    }
+
+    @keyframes rarity-flash {
+      0% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes gacha-roll {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50% { transform: scale(0.9) rotate(20deg); opacity: 0.7; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .rolling {
+      animation: gacha-roll 0.6s ease-in-out;
+    }
+
+    #counter {
+      min-width: 90px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .home-link {
+      margin: 30px auto;
       text-align: center;
     }
-    #youtube-player {
-      margin-bottom: 10px;
-    }
-    #video-info {
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    .controls button {
-      margin: 0 5px;
-      padding: 8px 12px;
+
+    .home-link button {
+      background-color: #bbb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
       font-size: 1rem;
       cursor: pointer;
     }
-    #toggle-autoplay.on, #toggle-random.on {
-      background-color: #4caf50;
-      color: white;
+
+    /* 미니 플레이어 스타일 */
+    #mini-player {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      padding: 10px 20px;
+      transition: opacity 0.5s ease;
+      display: none;
     }
-    #toggle-autoplay.off, #toggle-random.off {
-      background-color: #ccc;
-      color: #333;
+
+    .mini-player-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    #mini-player-title {
+      flex: 1;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #444;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #progress-bar {
+      flex: 2;
+      -webkit-appearance: none;
+      height: 5px;
+      background: #ff69b4;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #progress-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    #pause-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    @media (max-width: 480px) {
+      .slider-container {
+        width: 100%;
+        padding: 0 10px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 12px;
+        min-width: 90px;
+      }
+
+      .gacha-box {
+        font-size: 1.2rem;
+        padding: 8px 12px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="slider-container">
-    <div id="youtube-player"></div>
-    <div id="video-info">
-      <p id="video-order">영상 1 / ?</p>
-      <p id="video-date">업로드 날짜: 알 수 없음</p>
-    </div>
+    <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
+    
+    <!-- 가챠 결과 -->
+    <div id="gacha-box" class="gacha-box">-</div>
+
     <div class="controls">
-      <button id="prev-video">이전 영상</button>
-      <button id="next-video">다음 영상</button>
-    </div>
-    <div style="margin: 20px 0;">
-      <button id="toggle-autoplay" class="toggle-btn on">⏯ 자동재생: 켜짐</button>
-      <button id="toggle-random" class="toggle-btn off">🔀 랜덤재생: 꺼짐</button>
-    </div>
-    <div class="controls">
-      <a href="index.html" id="home-link"><button>🏠 메인으로 돌아가기</button></a>
+      <button id="sound-btn">🎲 가챠 돌리기</button>
+      <button id="prev-btn">◀ 이전</button>
+      <div id="counter">1 / 20</div>
+      <button id="next-btn">다음 ▶</button>
     </div>
   </div>
 
-  <!-- YouTube API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="youtube.js"></script>
+  <div class="home-link">
+    <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
+  </div>
+
+  <!-- 미니 플레이어 -->
+  <div id="mini-player">
+    <div class="mini-player-content">
+      <div id="mini-player-title">🔊 재생 중...</div>
+      <input type="range" id="progress-bar" value="0" step="1" min="0" max="100" />
+      <button id="pause-btn">⏸️</button>
+    </div>
+  </div>
 
   <script>
-    // 새로고침 방지
-    window.addEventListener("keydown", function (e) {
-      if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
-        e.preventDefault();
-      }
-    });
+    const totalItems = 20;
+    let currentIndex = 0;
 
-    // 페이지 이탈 경고 비활성화: 필요 시 아래 주석 제거하여 다시 활성화 가능
-    /*
-    function handleBeforeUnload(e) {
-      e.preventDefault();
-      e.returnValue = "";
+    const imageElement = document.getElementById("main-image");
+    const gachaBox = document.getElementById("gacha-box");
+    const soundButton = document.getElementById("sound-btn");
+    const counter = document.getElementById("counter");
+
+    const miniPlayer = document.getElementById("mini-player");
+    const progressBar = document.getElementById("progress-bar");
+    const pauseBtn = document.getElementById("pause-btn");
+    const miniTitle = document.getElementById("mini-player-title");
+
+    const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
+    const sounds = Array.from({ length: totalItems }, (_, i) => ({
+      normal: `sounds/sound${i + 1}_1.mp3`,
+      rare: `sounds/sound${i + 1}_2.mp3`,
+      special: `sounds/sound${i + 1}_special.mp3`,
+    }));
+
+    function updateDisplay() {
+      imageElement.src = images[currentIndex];
+      counter.textContent = `${currentIndex + 1} / ${totalItems}`;
+      gachaBox.textContent = "-";
+      gachaBox.className = "gacha-box";
     }
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    */
 
-    // 홈 버튼 누르면 beforeunload 이벤트 제거 (안 뜨게 처리)
-    document.getElementById("home-link").addEventListener("click", () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+    function playGachaEffect() {
+      const roll = Math.random();
+      const soundSet = sounds[currentIndex];
+      let rarity = "normal";
+      let audioSrc = soundSet.normal;
+      let label = "노말 🎵";
+
+      if (roll < 0.5) {
+        rarity = "normal";
+        audioSrc = soundSet.normal;
+        label = "노말 🎵";
+      } else if (roll < 0.8) {
+        rarity = "rare";
+        audioSrc = soundSet.rare;
+        label = "🌟 레어 등장!";
+      } else {
+        rarity = "special";
+        audioSrc = soundSet.special;
+        label = "💖 스페셜 획득!";
+      }
+
+      soundButton.disabled = true;
+      gachaBox.textContent = "🔄 로딩 중...";
+      gachaBox.className = "gacha-box rolling";
+
+      setTimeout(() => {
+        gachaBox.textContent = label;
+        gachaBox.className = `gacha-box rarity-${rarity}`;
+        imageElement.className = rarity === "normal" ? "" : `image-${rarity}`;
+
+        playAudio(audioSrc, label);
+      }, 1000);
+    }
+
+    let audioPlayer = null;
+
+    function playAudio(src, label) {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+
+      audioPlayer = new Audio(src);
+      miniPlayer.style.display = "flex";
+      miniTitle.textContent = label + " 재생 중";
+      progressBar.value = 0;
+      progressBar.max = 100;
+      pauseBtn.textContent = "⏸️";
+
+      audioPlayer.play();
+
+      audioPlayer.addEventListener("timeupdate", () => {
+        if (audioPlayer.duration) {
+          progressBar.max = Math.floor(audioPlayer.duration);
+          progressBar.value = Math.floor(audioPlayer.currentTime);
+        }
+      });
+
+      progressBar.oninput = () => {
+        audioPlayer.currentTime = progressBar.value;
+      };
+
+      pauseBtn.onclick = () => {
+        if (audioPlayer.paused) {
+          audioPlayer.play();
+          pauseBtn.textContent = "⏸️";
+        } else {
+          audioPlayer.pause();
+          pauseBtn.textContent = "▶️";
+        }
+      };
+
+      audioPlayer.onended = () => {
+        soundButton.disabled = false;
+        miniPlayer.style.display = "none";
+      };
+    }
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        miniPlayer.style.display = "none";
+      }
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay();
     });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        miniPlayer.style.display = "none";
+      }
+      currentIndex = (currentIndex + 1) % totalItems;
+      updateDisplay();
+    });
+
+    soundButton.addEventListener("click", () => {
+      playGachaEffect();
+    });
+
+    updateDisplay();
   </script>
 </body>
 </html>
