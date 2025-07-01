@@ -6,23 +6,25 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      transform: scale(0.72); /* 20% 줄임 (0.9 * 0.8 = 0.72) */
-      transform-origin: top left;
-      width: 125%;
-      height: auto;
-      overflow-x: hidden;
       font-family: 'Nunito', sans-serif;
       background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
       margin: 0;
       padding: 0;
       color: #333;
-      transition: background 0.8s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;      /* ✅ 수평 중앙 정렬 */
+      justify-content: flex-start;
+      min-height: 100vh;
     }
 
     .slider-container {
-      text-align: center;
+      width: 90%;
       max-width: 1000px;
-      margin: 0 auto;
+      text-align: center;
+      transform: scale(0.8);               /* ✅ 전체 축소 */
+      transform-origin: center top;        /* ✅ 중앙 기준으로 축소 */
+      margin-top: 30px;
     }
 
     #main-image {
@@ -163,7 +165,7 @@
 
       new Audio(audioSrc).play();
 
-      // 배경 및 진동 효과
+      // 배경색 + 진동 효과
       if (rarity === "rare") {
         document.body.classList.add("rare-mode");
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -174,7 +176,7 @@
         setTimeout(() => document.body.classList.remove("special-mode"), 2000);
       }
 
-      // 등급 텍스트 표시
+      // 텍스트 표시
       rarityDisplay.textContent = rarity.charAt(0).toUpperCase() + rarity.slice(1);
     }
 
