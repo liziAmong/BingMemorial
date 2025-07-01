@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🐰ASMR 음성 가챠</title>
   <style>
     body {
@@ -133,6 +133,69 @@
       cursor: pointer;
     }
 
+    /* 미니 플레이어 스타일 */
+    #mini-player {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      padding: 10px 20px;
+      transition: opacity 0.5s ease;
+      display: none;
+    }
+
+    .mini-player-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    #mini-player-title {
+      flex: 1;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #444;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #progress-bar {
+      flex: 2;
+      -webkit-appearance: none;
+      height: 5px;
+      background: #ff69b4;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #progress-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    #pause-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
     @media (max-width: 480px) {
       .slider-container {
         width: 100%;
@@ -171,6 +234,15 @@
     <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
   </div>
 
+  <!-- 미니 플레이어 -->
+  <div id="mini-player">
+    <div class="mini-player-content">
+      <div id="mini-player-title">🔊 재생 중...</div>
+      <input type="range" id="progress-bar" value="0" step="1" min="0" max="100" />
+      <button id="pause-btn">⏸️</button>
+    </div>
+  </div>
+
   <script>
     const totalItems = 20;
     let currentIndex = 0;
@@ -179,6 +251,11 @@
     const gachaBox = document.getElementById("gacha-box");
     const soundButton = document.getElementById("sound-btn");
     const counter = document.getElementById("counter");
+
+    const miniPlayer = document.getElementById("mini-player");
+    const progressBar = document.getElementById("progress-bar");
+    const pauseBtn = document.getElementById("pause-btn");
+    const miniTitle = document.getElementById("mini-player-title");
 
     const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
     const sounds = Array.from({ length: totalItems }, (_, i) => ({
@@ -199,7 +276,7 @@
       const soundSet = sounds[currentIndex];
       let rarity = "normal";
       let audioSrc = soundSet.normal;
-      let label = "노말";
+      let label = "노말 🎵";
 
       if (roll < 0.5) {
         rarity = "normal";
@@ -215,39 +292,77 @@
         label = "💖 스페셜 획득!";
       }
 
-      // UI 잠금 + 회전 효과
       soundButton.disabled = true;
       gachaBox.textContent = "🔄 로딩 중...";
       gachaBox.className = "gacha-box rolling";
 
-      // 1초 후 결과 표시
       setTimeout(() => {
         gachaBox.textContent = label;
         gachaBox.className = `gacha-box rarity-${rarity}`;
-
-        // 이미지 강조
         imageElement.className = rarity === "normal" ? "" : `image-${rarity}`;
 
-        const audio = new Audio(audioSrc);
-        audio.play();
-        audio.onended = () => {
-          soundButton.disabled = false;
-        };
-
-        // 진동
-        if (rarity !== "normal" && navigator.vibrate) {
-          navigator.vibrate(rarity === "rare" ? [100, 50, 100] : [200, 100, 200]);
-        }
-
+        playAudio(audioSrc, label);
       }, 1000);
     }
 
+    let audioPlayer = null;
+
+    function playAudio(src, label) {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+
+      audioPlayer = new Audio(src);
+      miniPlayer.style.display = "flex";
+      miniTitle.textContent = label + " 재생 중";
+      progressBar.value = 0;
+      progressBar.max = 100;
+      pauseBtn.textContent = "⏸️";
+
+      audioPlayer.play();
+
+      audioPlayer.addEventListener("timeupdate", () => {
+        if (audioPlayer.duration) {
+          progressBar.max = Math.floor(audioPlayer.duration);
+          progressBar.value = Math.floor(audioPlayer.currentTime);
+        }
+      });
+
+      progressBar.oninput = () => {
+        audioPlayer.currentTime = progressBar.value;
+      };
+
+      pauseBtn.onclick = () => {
+        if (audioPlayer.paused) {
+          audioPlayer.play();
+          pauseBtn.textContent = "⏸️";
+        } else {
+          audioPlayer.pause();
+          pauseBtn.textContent = "▶️";
+        }
+      };
+
+      audioPlayer.onended = () => {
+        soundButton.disabled = false;
+        miniPlayer.style.display = "none";
+      };
+    }
+
     document.getElementById("prev-btn").addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        miniPlayer.style.display = "none";
+      }
       currentIndex = (currentIndex - 1 + totalItems) % totalItems;
       updateDisplay();
     });
 
     document.getElementById("next-btn").addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        miniPlayer.style.display = "none";
+      }
       currentIndex = (currentIndex + 1) % totalItems;
       updateDisplay();
     });
