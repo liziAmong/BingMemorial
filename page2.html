@@ -18,13 +18,20 @@
       text-align: center;
     }
 
+    /* ✅ 반응형 유튜브 플레이어 */
     #youtube-player {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 비율 유지 */
+      height: 0;
       margin-bottom: 10px;
-      max-width: 100%;
-      aspect-ratio: 16 / 9;
+      overflow: hidden;
     }
 
-    iframe {
+    #youtube-player iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       border: none;
@@ -104,15 +111,11 @@
         gap: 12px;
       }
 
-      .controls button {
-        width: 100%;
-        font-size: 0.95rem;
-        padding: 10px;
-      }
-
+      .controls button,
       #home-link button {
         width: 100%;
         font-size: 0.95rem;
+        padding: 10px;
       }
     }
   </style>
