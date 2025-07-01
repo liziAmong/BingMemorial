@@ -16,6 +16,7 @@
       margin: 0;
       padding: 0;
       color: #333;
+      transition: background 0.8s ease;
     }
 
     .slider-container {
@@ -79,6 +80,16 @@
       font-size: 1rem;
       cursor: pointer;
     }
+
+    /* 레어 배경색 */
+    body.rare-mode {
+      background: linear-gradient(to bottom, #e6f7ff, #fff0f5);
+    }
+
+    /* 스페셜 배경색 */
+    body.special-mode {
+      background: linear-gradient(to bottom, #fffbe6, #ffe6f0);
+    }
   </style>
 </head>
 <body>
@@ -117,8 +128,8 @@
 
     // 이미지별 사운드 경로
     const sounds = Array.from({ length: totalItems }, (_, i) => ({
-      default1: `sounds/sound${i + 1}_1.mp3`,
-      default2: `sounds/sound${i + 1}_2.mp3`,
+      normal: `sounds/sound${i + 1}_1.mp3`,
+      rare: `sounds/sound${i + 1}_2.mp3`,
       special:  `sounds/sound${i + 1}_special.mp3`
     }));
 
@@ -139,20 +150,35 @@
     });
 
     soundButton.addEventListener("click", () => {
-      const r = Math.random();
-      let audioSrc;
+      const roll = Math.random();
       const soundSet = sounds[currentIndex];
+      let rarity = "normal";
+      let audioSrc = soundSet.normal;
 
-      if (r < 0.45) {
-        audioSrc = soundSet.default1;
-      } else if (r < 0.9) {
-        audioSrc = soundSet.default2;
+      if (roll < 0.5) {
+        rarity = "normal";
+        audioSrc = soundSet.normal;
+      } else if (roll < 0.8) {
+        rarity = "rare";
+        audioSrc = soundSet.rare;
       } else {
+        rarity = "special";
         audioSrc = soundSet.special;
       }
 
-      const audio = new Audio(audioSrc);
-      audio.play();
+      // 사운드 재생
+      new Audio(audioSrc).play();
+
+      // 효과 적용
+      if (rarity === "rare") {
+        document.body.classList.add("rare-mode");
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        setTimeout(() => document.body.classList.remove("rare-mode"), 1500);
+      } else if (rarity === "special") {
+        document.body.classList.add("special-mode");
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        setTimeout(() => document.body.classList.remove("special-mode"), 2000);
+      }
     });
 
     // 초기 표시
