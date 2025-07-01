@@ -1,168 +1,48 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>🐰ASMR 음성 가챠</title>
   <link rel="stylesheet" href="style.css">
 
-  <style>
-    body {
-      transform: scale(0.9);
-      transform-origin: top left;
-      width: 125%;
-      height: auto;
-      overflow-x: hidden;
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
+<style>
+  body {
+    transform: scale(0.9);
+    transform-origin: top left;
+    width: 125%;
+    height: auto;
+    overflow-x: hidden;
+  }
 
-    .slider-container {
-      text-align: center;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
+  .slider-container {
+    text-align: center; /* 버튼과 기타 요소도 중앙 정렬 */
+  }
 
-    #main-image {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto;
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .controls {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      background-color: #ffb6c1;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 24px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #ff69b4;
-      transform: scale(1.05);
-    }
-
-    #counter {
-      margin: 10px;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-
-    #sound-btn {
-      margin-top: 20px;
-    }
-
-    /* 🎵 랜덤 음성 표시 박스 */
-    #voice-box {
-      margin: 30px auto 10px;
-      max-width: 700px;
-      padding: 20px;
-      background: white;
-      border: 2px solid #ffc0cb;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3);
-    }
-
-    .voice {
-      margin: 10px 0;
-      font-weight: bold;
-      color: #555;
-    }
-
-    /* 메인으로 돌아가기 버튼 아래 위치 */
-    .back-home {
-      margin: 30px auto;
-      text-align: center;
-    }
-  </style>
+  #main-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto; /* 이미지를 수평 중앙 정렬 */
+  }
+</style>
+  
 </head>
 <body>
   <div class="slider-container">
-    <!-- 메인 이미지 -->
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지">
-
-    <!-- 페이지 카운터 -->
-    <div id="counter">1 / 20</div>
-
-    <!-- 이전/다음 버튼 -->
+<div id="counter" style="margin: 10px; font-weight: bold; font-size: 1.2rem;">1 / 20</div>
     <div class="controls">
       <button id="prev-btn">이전</button>
       <button id="next-btn">다음</button>
     </div>
-
-    <!-- 소리 재생 버튼 -->
-    <button id="sound-btn" onclick="playRandomVoices()">🔊 소리 재생</button>
-
-    <!-- 🎵 랜덤 음성 표시 영역 -->
-    <div id="voice-box">
-      <div class="voice">🎵 음성 1</div>
-      <div class="voice">🎵 음성 2</div>
-      <div class="voice">🎵 음성 3</div>
+    <button id="sound-btn">🔊 소리 재생</button>
+  </div>
+    <div class="controls">
+      <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
     </div>
-  </div>
 
-  <!-- 메인으로 돌아가기 버튼 -->
-  <div class="back-home">
-    <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
-  </div>
 
-  <script>
-    const allVoices = [
-      "🌸 봄날의 속삭임", "🎧 달빛 속 이야기", "🌙 꿈속의 너",
-      "🍂 바람의 노래", "🦋 푸른 새벽", "🎶 네 목소리",
-      "🌊 파도 위 멜로디", "🌠 별빛과 함께", "🍁 고요한 밤",
-    ];
-
-    function playRandomVoices() {
-      const voiceBox = document.getElementById("voice-box");
-      voiceBox.innerHTML = ""; // 초기화
-      const random = [...allVoices].sort(() => 0.5 - Math.random()).slice(0, 3);
-      random.forEach(v => {
-        const div = document.createElement("div");
-        div.className = "voice";
-        div.textContent = v;
-        voiceBox.appendChild(div);
-      });
-
-      // 실제 오디오 연결 예:
-      // new Audio('path/to/audio.mp3').play();
-    }
-
-    // 슬라이드 이동용 (예시용)
-    let current = 1;
-    const total = 20;
-
-    document.getElementById("prev-btn").onclick = function () {
-      if (current > 1) current--;
-      updateCounter();
-    };
-
-    document.getElementById("next-btn").onclick = function () {
-      if (current < total) current++;
-      updateCounter();
-    };
-
-    function updateCounter() {
-      document.getElementById("counter").textContent = `${current} / ${total}`;
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
