@@ -159,9 +159,9 @@
 
     #mini-player-title {
       flex: 2;
-      font-weight: bold;
-      font-size: 1rem;
-      color: #444;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #d81b60;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -287,6 +287,30 @@
       special: `sounds/sound${i + 1}_special.mp3`,
     }));
 
+    // 음성명 배열 (normal, rare, special 순서대로)
+    const voiceNames = [
+      ["보쌈하는중", "눈감으면이런느낌", "이정도로붙으면곤란"],
+      ["발렌타인잘보내", "알파벳시동", "알파벳"],
+      ["세팅중인", "안찐득찐득", "찾았다"],
+      ["그런취향", "선택지", "카운트다운"],
+      ["잘거면지금", "허벅지요", "내가이럴줄꼬르륵"],
+      ["그냥야로끝나면", "날씨가덥다", "여보야자기야"],
+      ["원하는호칭", "물좀마실게", "오쁘으어오빠"],
+      ["프로바니걸", "야발좋아해", "3시간하면저죽어욧"],
+      ["이러면안들리지바보", "호해봐호", "수고했어오늘도"],
+      ["다오셨을거니까", "심장박동", "카운트다운"],
+      ["깜빡미성안녕", "두근두근", "해달라는거다해줘"],
+      ["그루밍주인님", "바보", "바보멍청이바보"],
+      ["왕년에", "치즈를안잡아먹지", "혀놀림"],
+      ["저기터져나가는세상", "이거는알아서상상", "펀치숨소리"],
+      ["오빠는어캐부를건데", "자기야자기야자기야", "사랑해사랑해사랑해"],
+      ["내눈보고있는거맞지", "꼬르륵왜잡히냐구", "배방구스페셜"],
+      ["깔아뭉겠어", "저ㅆㅆ가", "뽀뽀뽀"],
+      ["정신이들어", "나는뱀이고", "레로레로"],
+      ["같이달보러", "너무쎄게아퍼", "ㅗㅜㅑ"],
+      ["에취에으흐으응", "여성호르몬과다", "두근뽀뽀후우"],
+    ];
+
     function updateDisplay() {
       imageElement.src = images[currentIndex];
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
@@ -306,19 +330,20 @@
       const soundSet = sounds[currentIndex];
       let rarity = "normal";
       let audioSrc = soundSet.normal;
-      let label = "노말 🎵";
+      let label = voiceNames[currentIndex][0]; // 기본 노말 이름
 
       if (roll < 0.5) {
         audioSrc = soundSet.normal;
-        label = "노말 🎵";
+        rarity = "normal";
+        label = voiceNames[currentIndex][0];
       } else if (roll < 0.8) {
         rarity = "rare";
         audioSrc = soundSet.rare;
-        label = "🌟 레어 등장!";
+        label = voiceNames[currentIndex][1];
       } else {
         rarity = "special";
         audioSrc = soundSet.special;
-        label = "💖 스페셜 획득!";
+        label = voiceNames[currentIndex][2];
       }
 
       soundButton.disabled = true;
@@ -327,7 +352,7 @@
 
       setTimeout(() => {
         document.body.className = `${rarity}-bg`;
-        gachaBox.textContent = label;
+        gachaBox.textContent = rarity === "normal" ? "노말 🎵" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
         gachaBox.className = `gacha-box rarity-${rarity}`;
         playAudio(audioSrc, label);
       }, 1000);
@@ -345,7 +370,7 @@
       audioPlayer.volume = volumeBar.value;
 
       miniPlayer.style.display = "flex";
-      miniTitle.textContent = label + " 재생 중";
+      miniTitle.textContent = `${label} 음성 재생 중`;
       progressBar.value = 0;
       progressBar.max = 100;
       pauseBtn.textContent = "⏸️";
