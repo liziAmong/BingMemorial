@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>💗유튜브 커버곡</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 0 10px;
+      color: #333;
+    }
+
+    .slider-container {
+      text-align: center;
+    }
+
+    #youtube-player {
+      margin-bottom: 10px;
+    }
+
+    #video-info {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .controls {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .controls button {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .controls button:hover {
+      background-color: #ff69b4;
+      transform: scale(1.05);
+    }
+
+    #toggle-autoplay.on, #toggle-random.on {
+      background-color: #4caf50;
+    }
+
+    #toggle-autoplay.off, #toggle-random.off {
+      background-color: #ccc;
+      color: #333;
+    }
+
+    #home-link button {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #home-link button:hover {
+      background-color: #ff69b4;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="slider-container">
+    <!-- 유튜브 플레이어 -->
+    <div id="youtube-player"></div>
+
+    <!-- 영상 정보 -->
+    <div id="video-info">
+      <p id="video-order">영상 1 / ?</p>
+      <p id="video-date">업로드 날짜: 알 수 없음</p>
+    </div>
+
+    <!-- 이전/다음 영상 버튼 -->
+    <div class="controls">
+      <button id="prev-video">이전 영상</button>
+      <button id="next-video">다음 영상</button>
+    </div>
+
+    <!-- 자동재생 / 랜덤 버튼 -->
+    <div class="controls" style="margin-top: 20px;">
+      <button id="toggle-autoplay" class="toggle-btn on">⏯ 자동재생: 켜짐</button>
+      <button id="toggle-random" class="toggle-btn off">🔀 랜덤재생: 꺼짐</button>
+    </div>
+
+    <!-- 메인으로 돌아가기 -->
+    <div class="controls" style="margin-top: 20px;">
+      <a href="index.html" id="home-link"><button>🏠 메인으로 돌아가기</button></a>
+    </div>
+  </div>
+
+  <!-- YouTube iframe API 먼저 불러오기 -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- 별도 js파일 연결 (또는 inline script) -->
+  <script src="youtube.js"></script>
+</body>
+</html>

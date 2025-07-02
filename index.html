@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐰💗Bing</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --bg-color: #fff;
+      --text-color: #333;
+      --card-bg: #fff;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --label-bg: rgba(0, 0, 0, 0.5);
+      --label-color: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #121212;
+        --text-color: #f0f0f0;
+        --card-bg: #1e1e1e;
+        --card-shadow: rgba(255, 255, 255, 0.1);
+        --label-bg: rgba(255, 255, 255, 0.15);
+        --label-color: #fff;
+      }
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      text-align: center;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .card-link {
+      text-decoration: none;
+    }
+
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      opacity: 1;
+    }
+
+.card-label {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  font-size: 1.2rem;
+  padding: 14px 0;
+  font-weight: bold;
+
+  color: white; /* 🔁 하얀 글자 */
+  background: rgba(0, 0, 0, 0.6); /* 🔁 반투명 검정 배경 */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* 🔁 더 진한 그림자 */
+}
+
+    @media (max-width: 1024px) {
+      .card {
+        width: 80vw;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- 
+  <h1>🐰💗 Bing Pages</h1>
+  <div class="menu">
+-->
+    <!-- 아트북 보기 -->
+   <a class="card-link" href="page1.html">
+  <div class="card">
+    <img src="images/image0.jpg" alt="아트북 보기" />
+    <div class="card-label">🐰ASMR 가챠</div>
+  </div>
+</a>
+
+<a class="card-link" href="page2.html">
+  <div class="card">
+    <img src="images/image00.jpg" alt="유튜브 커버곡 보기" />
+    <div class="card-label">💗 유튜브 커버곡 </div>
+  </div>
+</a>
+  </div>
+
+  <script>
+    // 우클릭 방지
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // 드래그 및 텍스트 선택 방지
+    document.addEventListener('dragstart', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+
+    // 개발자 도구 단축키 방지 (조용히)
+    document.addEventListener('keydown', function (e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && ['U', 'S'].includes(e.key))
+      ) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
