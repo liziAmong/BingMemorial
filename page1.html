@@ -1,4 +1,3 @@
-<!-- [전체 코드 요약용 — head 및 구조는 기존 코드와 동일] -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,32 +5,221 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🐰ASMR 음성 가챠</title>
   <style>
-    /* ... 기존 스타일 유지 ... */
-    /* volume-bar 추가 */
+    body {
+      font-family: 'Nunito', sans-serif;
+      margin: 20px auto;
+      max-width: 700px;
+      padding: 0 10px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.8s ease;
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+    }
+
+    body.normal-bg {
+      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+    }
+
+    body.rare-bg {
+      background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+    }
+
+    body.special-bg {
+      background: linear-gradient(to bottom, #ff9a9e, #fecfef);
+    }
+
+    .slider-container {
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #main-image {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 15px auto;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+
+    button {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      font-weight: bold;
+      min-width: 100px;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #ff69b4;
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .gacha-box {
+      margin: 20px auto;
+      min-height: 60px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      padding: 12px 20px;
+      border-radius: 18px;
+      transition: all 0.4s ease;
+    }
+
+    .rarity-normal {
+      background-color: #f0f0f0;
+      color: #555;
+    }
+
+    .rarity-rare {
+      background-color: #87cefa;
+      color: white;
+      animation: rarity-flash 1s ease-in-out;
+      box-shadow: 0 0 15px 3px #64b5f6;
+    }
+
+    .rarity-special {
+      background-color: #ff69b4;
+      color: white;
+      animation: rarity-flash 1s ease-in-out;
+      box-shadow: 0 0 20px 4px #ff4081;
+    }
+
+    @keyframes rarity-flash {
+      0% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .home-link {
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .home-link button {
+      background-color: #ffb6c1;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 12px;
+    }
+
+    #mini-player {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 95%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      padding: 12px 16px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mini-player-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .mini-player-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    #mini-player-title {
+      flex: 2;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #444;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #progress-bar {
+      flex: 2;
+      -webkit-appearance: none;
+      height: 5px;
+      background: #ff69b4;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
     #volume-bar {
-      flex: 1.5;
+      width: 100%;
       -webkit-appearance: none;
       height: 5px;
       background: #aaa;
       border-radius: 3px;
       outline: none;
       cursor: pointer;
-      margin-top: 4px;
     }
 
+    #progress-bar::-webkit-slider-thumb,
     #volume-bar::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 10px;
       height: 10px;
-      background: #fff;
-      border: 1px solid #ccc;
+      background: white;
       border-radius: 50%;
+      border: 1px solid #ccc;
       cursor: pointer;
     }
 
     @media (max-width: 768px) {
-      #volume-bar {
-        width: 100%;
+      body {
+        padding: 0 15px;
+        font-size: 15px;
+      }
+
+      .controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      #mini-player {
+        padding: 10px;
+      }
+
+      .mini-player-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .mini-player-controls {
+        justify-content: flex-end;
       }
     }
   </style>
@@ -53,18 +241,18 @@
     <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
   </div>
 
-  <!-- ✅ 미니플레이어에 볼륨바 추가 -->
   <div id="mini-player">
     <div class="mini-player-content">
       <div id="mini-player-title">🔊 재생 중...</div>
       <input type="range" id="progress-bar" value="0" step="1" min="0" max="100" />
-      <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="1" />
-      <button id="pause-btn">⏸️</button>
-      <button id="close-btn">❌</button>
+      <div class="mini-player-controls">
+        <button id="pause-btn">⏸️</button>
+        <button id="close-btn">❌</button>
+      </div>
     </div>
+    <input type="range" id="volume-bar" min="0" max="1" step="0.01" value="1" />
   </div>
 
-  <!-- 복붙 방지 스크립트 -->
   <script>
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('copy', e => e.preventDefault());
@@ -78,10 +266,7 @@
         e.preventDefault();
       }
     });
-  </script>
 
-  <!-- JS 가챠 + 오디오 로직 -->
-  <script>
     const totalItems = 20;
     let currentIndex = 0;
     const imageElement = document.getElementById("main-image");
@@ -124,7 +309,6 @@
       let label = "노말 🎵";
 
       if (roll < 0.5) {
-        rarity = "normal";
         audioSrc = soundSet.normal;
         label = "노말 🎵";
       } else if (roll < 0.8) {
@@ -158,12 +342,12 @@
       }
 
       audioPlayer = new Audio(src);
+      audioPlayer.volume = volumeBar.value;
+
       miniPlayer.style.display = "flex";
       miniTitle.textContent = label + " 재생 중";
       progressBar.value = 0;
       progressBar.max = 100;
-      volumeBar.value = 1;
-      audioPlayer.volume = 1;
       pauseBtn.textContent = "⏸️";
 
       audioPlayer.play().catch(e => console.error("오디오 재생 실패:", e));
@@ -180,9 +364,7 @@
       };
 
       volumeBar.oninput = () => {
-        if (audioPlayer) {
-          audioPlayer.volume = volumeBar.value;
-        }
+        if (audioPlayer) audioPlayer.volume = volumeBar.value;
       };
 
       pauseBtn.onclick = () => {
