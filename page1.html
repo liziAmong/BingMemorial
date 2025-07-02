@@ -409,4 +409,83 @@
         audioPlayer = null;
       }
 
-      audioContext = new (window.AudioContext || window.webkit
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      gainNode = audioContext.createGain();
+      const audioElement = new Audio(src);
+      const track = audioContext.createMediaElementSource(audioElement);
+
+      gainNode.gain.value = parseFloat(volumeBar.value) * 2;
+      track.connect(gainNode).connect(audioContext.destination);
+
+      audioPlayer = audioElement;
+      miniPlayer.style.display = "flex";
+      miniTitle.textContent = `${label}`;
+      progressBar.value = 0;
+      progressBar.max = 100;
+      pauseBtn.textContent = "⏸️";
+
+      audioPlayer.play().catch(e => console.error("오디오 재생 실패:", e));
+
+      audioPlayer.addEventListener("timeupdate", () => {
+        if (audioPlayer.duration) {
+          progressBar.max = Math.floor(audioPlayer.duration);
+          progressBar.value = Math.floor(audioPlayer.currentTime);
+        }
+      });
+
+      progressBar.oninput = () => {
+        audioPlayer.currentTime = progressBar.value;
+      };
+
+      volumeBar.oninput = () => {
+        if (gainNode) gainNode.gain.value = parseFloat(volumeBar.value) * 2;
+      };
+
+      pauseBtn.onclick = () => {
+        if (audioPlayer.paused) {
+          audioPlayer.play();
+          pauseBtn.textContent = "⏸️";
+        } else {
+          audioPlayer.pause();
+          pauseBtn.textContent = "▶️";
+        }
+      };
+
+      audioPlayer.onended = () => {
+        soundButton.disabled = false;
+        miniPlayer.style.display = "none";
+        document.body.className = "normal-bg";
+        gachaBox.textContent = "-";
+        gachaBox.className = "gacha-box rarity-normal";
+      };
+    }
+
+    closeBtn.addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+      miniPlayer.style.display = "none";
+      soundButton.disabled = false;
+      document.body.className = "normal-bg";
+      gachaBox.textContent = "-";
+      gachaBox.className = "gacha-box rarity-normal";
+    });
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      if (audioPlayer) audioPlayer.pause();
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay();
+    });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (audioPlayer) audioPlayer.pause();
+      currentIndex = (currentIndex + 1) % totalItems;
+      updateDisplay();
+    });
+
+    soundButton.addEventListener("click", playGachaEffect);
+    updateDisplay();
+  </script>
+</body>
+</html>
