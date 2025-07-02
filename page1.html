@@ -47,6 +47,17 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
 
+    /* 사진 제목 스타일 */
+    #image-title {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #d81b60;
+      text-align: center;
+      user-select: none;
+      min-height: 28px; /* 공간 확보 */
+    }
+
     .controls {
       margin-top: 15px;
       display: flex;
@@ -227,6 +238,8 @@
 <body class="normal-bg" oncontextmenu="return false">
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
+    <div id="image-title">들어오세요 하유</div>
+
     <div id="gacha-box" class="gacha-box rarity-normal">-</div>
 
     <div class="controls">
@@ -254,196 +267,202 @@
   </div>
 
   <script>
-  document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('copy', e => e.preventDefault());
-  document.addEventListener('paste', e => e.preventDefault());
-  document.addEventListener('keydown', function (e) {
-    if (
-      e.key === 'F12' ||
-      (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
-      (e.ctrlKey && e.key === 'U')
-    ) {
-      e.preventDefault();
-    }
-  });
-
-  const totalItems = 20;
-  let currentIndex = 0;
-  const imageElement = document.getElementById("main-image");
-  const gachaBox = document.getElementById("gacha-box");
-  const soundButton = document.getElementById("sound-btn");
-  const counter = document.getElementById("counter");
-  const miniPlayer = document.getElementById("mini-player");
-  const progressBar = document.getElementById("progress-bar");
-  const volumeBar = document.getElementById("volume-bar");
-  const pauseBtn = document.getElementById("pause-btn");
-  const closeBtn = document.getElementById("close-btn");
-  const miniTitle = document.getElementById("mini-player-title");
-
-  const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
-  const sounds = Array.from({ length: totalItems }, (_, i) => ({
-    normal: `sounds/sound${i + 1}_1.mp3`,
-    rare: `sounds/sound${i + 1}_2.mp3`,
-    special: `sounds/sound${i + 1}_special.mp3`,
-  }));
-
-  const voiceNames = [
-    ["보쌈하는중", "눈감으면이런느낌", "이정도로붙으면곤란"],
-    ["발렌타인잘보내", "알파벳시동", "알파벳"],
-    ["세팅중인", "안찐득찐득", "찾았다"],
-    ["그런취향", "선택지", "카운트다운"],
-    ["잘거면지금", "허벅지요", "내가이럴줄꼬르륵"],
-    ["그냥야로끝나면", "날씨가덥다", "여보야자기야"],
-    ["원하는호칭", "물좀마실게", "오쁘으어오빠"],
-    ["프로바니걸", "야발좋아해", "3시간하면저죽어욧"],
-    ["이러면안들리지바보", "호해봐호", "수고했어오늘도"],
-    ["다오셨을거니까", "심장박동", "카운트다운"],
-    ["깜빡미성안녕", "두근두근", "해달라는거다해줘"],
-    ["그루밍주인님", "바보", "바보멍청이바보"],
-    ["왕년에", "치즈를안잡아먹지", "혀놀림"],
-    ["저기터져나가는세상", "이거는알아서상상", "펀치숨소리"],
-    ["오빠는어캐부를건데", "자기야자기야자기야", "사랑해사랑해사랑해"],
-    ["내눈보고있는거맞지", "꼬르륵왜잡히냐구", "배방구스페셜"],
-    ["깔아뭉겠어", "저ㅆㅆ가", "뽀뽀뽀"],
-    ["정신이들어", "나는뱀이고", "레로레로"],
-    ["같이달보러", "너무쎄게아퍼", "ㅗㅜㅑ"],
-    ["에취에으흐으응", "여성호르몬과다", "두근뽀뽀후우"],
-  ];
-
-  function updateDisplay() {
-    imageElement.src = images[currentIndex];
-    counter.textContent = `${currentIndex + 1} / ${totalItems}`;
-    gachaBox.textContent = "-";
-    gachaBox.className = "gacha-box rarity-normal";
-    document.body.className = "normal-bg";
-    if (audioPlayer) {
-      audioPlayer.pause();
-      audioPlayer = null;
-    }
-    miniPlayer.style.display = "none";
-    soundButton.disabled = false;
-  }
-
-  function playGachaEffect() {
-    const roll = Math.random();
-    const soundSet = sounds[currentIndex];
-    let rarity = "normal";
-    let audioSrc = soundSet.normal;
-    let label = voiceNames[currentIndex][0];
-
-    if (roll < 0.5) {
-      rarity = "normal";
-      audioSrc = soundSet.normal;
-      label = voiceNames[currentIndex][0];
-    } else if (roll < 0.8) {
-      rarity = "rare";
-      audioSrc = soundSet.rare;
-      label = voiceNames[currentIndex][1];
-    } else {
-      rarity = "special";
-      audioSrc = soundSet.special;
-      label = voiceNames[currentIndex][2];
-    }
-
-    soundButton.disabled = true;
-    gachaBox.textContent = "🔄 로딩 중...";
-    gachaBox.className = "gacha-box rolling";
-
-    setTimeout(() => {
-      document.body.className = `${rarity}-bg`;
-      gachaBox.textContent = rarity === "normal" ? "노말 🎵" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
-      gachaBox.className = `gacha-box rarity-${rarity}`;
-      playAudio(audioSrc, label);
-    }, 1000);
-  }
-
-  let audioPlayer = null;
-  let audioContext = null;
-  let gainNode = null;
-
-  function playAudio(src, label) {
-    if (audioPlayer) {
-      audioPlayer.pause();
-      audioPlayer = null;
-    }
-
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = audioContext.createGain();
-    const audioElement = new Audio(src);
-    const track = audioContext.createMediaElementSource(audioElement);
-
-    gainNode.gain.value = parseFloat(volumeBar.value) * 2;
-    track.connect(gainNode).connect(audioContext.destination);
-
-    audioPlayer = audioElement;
-    miniPlayer.style.display = "flex";
-    miniTitle.textContent = `${label}`;
-    progressBar.value = 0;
-    progressBar.max = 100;
-    pauseBtn.textContent = "⏸️";
-
-    audioPlayer.play().catch(e => console.error("오디오 재생 실패:", e));
-
-    audioPlayer.addEventListener("timeupdate", () => {
-      if (audioPlayer.duration) {
-        progressBar.max = Math.floor(audioPlayer.duration);
-        progressBar.value = Math.floor(audioPlayer.currentTime);
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('paste', e => e.preventDefault());
+    document.addEventListener('keydown', function (e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && e.key === 'U')
+      ) {
+        e.preventDefault();
       }
     });
 
-    progressBar.oninput = () => {
-      audioPlayer.currentTime = progressBar.value;
-    };
+    const totalItems = 20;
+    let currentIndex = 0;
+    const imageElement = document.getElementById("main-image");
+    const gachaBox = document.getElementById("gacha-box");
+    const soundButton = document.getElementById("sound-btn");
+    const counter = document.getElementById("counter");
+    const miniPlayer = document.getElementById("mini-player");
+    const progressBar = document.getElementById("progress-bar");
+    const volumeBar = document.getElementById("volume-bar");
+    const pauseBtn = document.getElementById("pause-btn");
+    const closeBtn = document.getElementById("close-btn");
+    const miniTitle = document.getElementById("mini-player-title");
 
-    volumeBar.oninput = () => {
-      if (gainNode) gainNode.gain.value = parseFloat(volumeBar.value) * 2;
-    };
+    const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
+    const sounds = Array.from({ length: totalItems }, (_, i) => ({
+      normal: `sounds/sound${i + 1}_1.mp3`,
+      rare: `sounds/sound${i + 1}_2.mp3`,
+      special: `sounds/sound${i + 1}_special.mp3`,
+    }));
 
-    pauseBtn.onclick = () => {
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-        pauseBtn.textContent = "⏸️";
-      } else {
+    // 사진 제목 배열
+    const titles = [
+      "들어오세요 하유",
+      "사탕물어요 하유",
+      "어제어땠어 하유",
+      "오피스바닥 하유",
+      "오피스선배 하유",
+      "미시일루왓 하유",
+      "커피데이트 하유",
+      "노말타입임 하유",
+      "남친셔츠당 하유",
+      "송편드세요 하유",
+      "라디오에요 하유",
+      "바니잠옷임 하유",
+      "고스트짜잔 하유",
+      "손꼭잡은낮 하유",
+      "손꼭잡은밤 하유",
+      "무릎강조중 하유",
+      "산타입니다 하유",
+      "푸른뱀이당 하유",
+      "밤도시볼턱 하유",
+      "사인귀파줘 하유"
+    ];
+
+    function updateDisplay() {
+      imageElement.src = images[currentIndex];
+      counter.textContent = `${currentIndex + 1} / ${totalItems}`;
+      gachaBox.textContent = "-";
+      gachaBox.className = "gacha-box rarity-normal";
+      document.body.className = "normal-bg";
+
+      // 사진 제목 업데이트
+      const imageTitle = document.getElementById("image-title");
+      imageTitle.textContent = titles[currentIndex];
+
+      if (audioPlayer) {
         audioPlayer.pause();
-        pauseBtn.textContent = "▶️";
+        audioPlayer = null;
       }
-    };
-
-    audioPlayer.onended = () => {
-      soundButton.disabled = false;
       miniPlayer.style.display = "none";
+      soundButton.disabled = false;
+    }
+
+    function playGachaEffect() {
+      const roll = Math.random();
+      const soundSet = sounds[currentIndex];
+      let rarity = "normal";
+      let audioSrc = soundSet.normal;
+      let label = titles[currentIndex];
+
+      if (roll < 0.5) {
+        rarity = "normal";
+        audioSrc = soundSet.normal;
+        label = titles[currentIndex];
+      } else if (roll < 0.8) {
+        rarity = "rare";
+        audioSrc = soundSet.rare;
+        label = titles[currentIndex];
+      } else {
+        rarity = "special";
+        audioSrc = soundSet.special;
+        label = titles[currentIndex];
+      }
+
+      soundButton.disabled = true;
+      gachaBox.textContent = "🔄 로딩 중...";
+      gachaBox.className = "gacha-box rolling";
+
+      setTimeout(() => {
+        document.body.className = `${rarity}-bg`;
+        gachaBox.textContent = rarity === "normal" ? "노말 🎵" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
+        gachaBox.className = `gacha-box rarity-${rarity}`;
+        playAudio(audioSrc, label);
+      }, 1000);
+    }
+
+    let audioPlayer = null;
+    let audioContext = null;
+    let gainNode = null;
+
+    function playAudio(src, label) {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      gainNode = audioContext.createGain();
+      const audioElement = new Audio(src);
+      const track = audioContext.createMediaElementSource(audioElement);
+
+      gainNode.gain.value = parseFloat(volumeBar.value) * 2;
+      track.connect(gainNode).connect(audioContext.destination);
+
+      audioPlayer = audioElement;
+      miniPlayer.style.display = "flex";
+      miniTitle.textContent = `${label}`;
+      progressBar.value = 0;
+      progressBar.max = 100;
+      pauseBtn.textContent = "⏸️";
+
+      audioPlayer.play().catch(e => console.error("오디오 재생 실패:", e));
+
+      audioPlayer.addEventListener("timeupdate", () => {
+        if (audioPlayer.duration) {
+          progressBar.max = Math.floor(audioPlayer.duration);
+          progressBar.value = Math.floor(audioPlayer.currentTime);
+        }
+      });
+
+      progressBar.oninput = () => {
+        audioPlayer.currentTime = progressBar.value;
+      };
+
+      volumeBar.oninput = () => {
+        if (gainNode) gainNode.gain.value = parseFloat(volumeBar.value) * 2;
+      };
+
+      pauseBtn.onclick = () => {
+        if (audioPlayer.paused) {
+          audioPlayer.play();
+          pauseBtn.textContent = "⏸️";
+        } else {
+          audioPlayer.pause();
+          pauseBtn.textContent = "▶️";
+        }
+      };
+
+      audioPlayer.onended = () => {
+        soundButton.disabled = false;
+        miniPlayer.style.display = "none";
+        document.body.className = "normal-bg";
+        gachaBox.textContent = "-";
+        gachaBox.className = "gacha-box rarity-normal";
+      };
+    }
+
+    closeBtn.addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+      miniPlayer.style.display = "none";
+      soundButton.disabled = false;
       document.body.className = "normal-bg";
       gachaBox.textContent = "-";
       gachaBox.className = "gacha-box rarity-normal";
-    };
-  }
+    });
 
-  closeBtn.addEventListener("click", () => {
-    if (audioPlayer) {
-      audioPlayer.pause();
-      audioPlayer = null;
-    }
-    miniPlayer.style.display = "none";
-    soundButton.disabled = false;
-    document.body.className = "normal-bg";
-    gachaBox.textContent = "-";
-    gachaBox.className = "gacha-box rarity-normal";
-  });
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      if (audioPlayer) audioPlayer.pause();
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay();
+    });
 
-  document.getElementById("prev-btn").addEventListener("click", () => {
-    if (audioPlayer) audioPlayer.pause();
-    currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (audioPlayer) audioPlayer.pause();
+      currentIndex = (currentIndex + 1) % totalItems;
+      updateDisplay();
+    });
+
+    soundButton.addEventListener("click", playGachaEffect);
     updateDisplay();
-  });
-
-  document.getElementById("next-btn").addEventListener("click", () => {
-    if (audioPlayer) audioPlayer.pause();
-    currentIndex = (currentIndex + 1) % totalItems;
-    updateDisplay();
-  });
-
-  soundButton.addEventListener("click", playGachaEffect);
-  updateDisplay();
-</script>
+  </script>
 </body>
 </html>
