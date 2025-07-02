@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
+  margin: 0;
+  padding: 0;
+  color: #333;
+  transition: background 1s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* 메인 제목 */
+h1 {
+  color: #ff69b4;
+  margin-top: 10px;
+  font-size: 2.5em;
+  animation: fadeIn 1s ease;
+}
+
+/* 메인 메뉴 이미지 버튼 */
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-top: 40px;
+  animation: fadeIn 1s ease;
+}
+
+.menu a {
+  text-decoration: none;
+}
+
+.menu-img-btn {
+  width: 200px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.menu-img-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 30px rgba(255, 105, 180, 0.4);
+}
+
+/* 슬라이더 박스 */
+.slider-container {
+  margin: 30px auto;
+  padding: 20px;
+  max-width: 800px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(255, 182, 193, 0.5);
+  animation: slideUp 1s ease;
+}
+
+img {
+  max-width: 100%;
+  border: 5px solid #87ceeb;
+  border-radius: 15px;
+  animation: fadeIn 1s ease;
+}
+
+/* 버튼 기본 */
+button {
+  background-color: #ffb6c1;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #ff69b4;
+  transform: scale(1.05);
+}
+
+/* 슬라이더 컨트롤 */
+.controls {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* 유튜브 정보 */
+#video-info p {
+  margin: 5px 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.toggle-container {
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 720px;      /* 기존 800px에서 10% 감소 */
+  height: auto;      /* 이미지 비율에 맞게 자동 조절 */
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: var(--card-bg);
+  box-shadow: 0 6px 15px var(--card-shadow);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s;
+  opacity: 0.95;
+  position: relative;
+
+  display: inline-block;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background-color: #000;
+  display: block;
+}
+
+
+.toggle-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.on {
+  background-color: #4caf50;
+  color: white;
+}
+
+.toggle-btn.off {
+  background-color: #999;
+  color: white;
+}
+
+
+@media (min-width: 600px) {
+  .menu {
+    flex-direction: row;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
