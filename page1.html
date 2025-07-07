@@ -35,6 +35,7 @@
       width: 100%;
       text-align: center;
       margin-top: 20px;
+      position: relative;
     }
 
     #main-image {
@@ -46,6 +47,7 @@
       border-radius: 20px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
       cursor: pointer;
+      user-select: none;
     }
 
     /* 사진 제목 스타일 */
@@ -57,6 +59,14 @@
       text-align: center;
       user-select: none;
       min-height: 28px;
+    }
+
+    #easter-egg-click-counter {
+      margin-top: 8px;
+      font-weight: bold;
+      color: #d81b60;
+      user-select: none;
+      display: none;
     }
 
     .controls {
@@ -79,6 +89,7 @@
       transition: background 0.3s ease, transform 0.2s ease;
       font-weight: bold;
       min-width: 100px;
+      user-select: none;
     }
 
     button:hover:not(:disabled) {
@@ -210,37 +221,6 @@
       cursor: pointer;
     }
 
-    /* 이스터에그 이미지 및 카운터 */
-    #easter-egg-wrapper {
-      position: relative;
-      display: inline-block;
-      margin-top: 30px;
-      width: 100%;
-      max-width: 700px;
-      cursor: pointer;
-    }
-
-    #easter-egg-img {
-      width: 100%;
-      height: auto;
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      object-fit: contain;
-    }
-
-    #click-counter {
-      position: absolute;
-      bottom: 5px;
-      right: 5px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      padding: 2px 6px;
-      font-size: 12px;
-      border-radius: 8px;
-      display: none;
-      user-select: none;
-    }
-
     /* 이스터에그 플레이어 */
     #easter-egg-player {
       display: none;
@@ -305,6 +285,7 @@
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
     <div id="image-title">들어오세요 하유</div>
+    <div id="easter-egg-click-counter">0 / 13</div>
 
     <div id="gacha-box" class="gacha-box rarity-normal">-</div>
 
@@ -318,12 +299,6 @@
 
   <div class="home-link">
     <a href="index.html"><button>🏠 메인으로 돌아가기</button></a>
-  </div>
-
-  <!-- 이스터에그 이미지와 클릭 카운터 -->
-  <div id="easter-egg-wrapper">
-    <img id="easter-egg-img" src="images/image20.jpg" alt="20번 이미지" />
-    <div id="click-counter">0 / 13</div>
   </div>
 
   <!-- 이스터에그 음성 플레이어 -->
@@ -377,8 +352,7 @@
     // 이스터에그 관련
     let eggClickCount = 0;
     const playerDiv = document.getElementById('easter-egg-player');
-    const counterText = document.getElementById('click-counter');
-    const eggImage = document.getElementById('easter-egg-img');
+    const counterText = document.getElementById('easter-egg-click-counter');
 
     const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
     const sounds = Array.from({ length: totalItems }, (_, i) => ({
@@ -442,15 +416,14 @@
 
       document.getElementById("image-title").textContent = titles[currentIndex];
 
-      // 이스터에그 이미지는 항상 20번째 이미지 보여줌
-      eggImage.src = images[19];
-
       if (audioPlayer) {
         audioPlayer.pause();
         audioPlayer = null;
       }
       miniPlayer.style.display = "none";
       soundButton.disabled = false;
+
+      resetEggCounter();
     }
 
     function playGachaEffect() {
@@ -508,7 +481,7 @@
         if (audioPlayer.duration) {
           progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
         }
-      }, 250);
+      }, 500);
 
       audioPlayer.onended = () => {
         clearInterval(progressInterval);
@@ -517,20 +490,22 @@
       };
     }
 
-    soundButton.addEventListener("click", () => {
-      playGachaEffect();
+    soundButton.addEventListener("click", playGachaEffect);
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay();
     });
 
     document.getElementById("next-btn").addEventListener("click", () => {
       currentIndex = (currentIndex + 1) % totalItems;
       updateDisplay();
-      resetEggCounter();
     });
 
-    document.getElementById("prev-btn").addEventListener("click", () => {
-      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-      updateDisplay();
-      resetEggCounter();
+    progressBar.addEventListener("input", () => {
+      if (audioPlayer && audioPlayer.duration) {
+        audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
+      }
     });
 
     pauseBtn.addEventListener("click", () => {
@@ -549,15 +524,9 @@
       if (audioPlayer) {
         audioPlayer.pause();
         audioPlayer = null;
-        miniPlayer.style.display = "none";
-        soundButton.disabled = false;
       }
-    });
-
-    progressBar.addEventListener("input", () => {
-      if (audioPlayer && audioPlayer.duration) {
-        audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
-      }
+      miniPlayer.style.display = "none";
+      soundButton.disabled = false;
     });
 
     volumeBar.addEventListener("input", () => {
@@ -566,15 +535,26 @@
       }
     });
 
-    // 이스터에그 클릭 이벤트
-    eggImage.addEventListener('click', () => {
-      if (currentIndex === 19) { // 20번째 슬라이드일 때만
+    // 이스터에그 클릭 카운터 초기화 함수
+    function resetEggCounter() {
+      eggClickCount = 0;
+      counterText.style.display = "none";
+      counterText.textContent = `0 / 13`;
+      playerDiv.style.display = "none";
+      counterText.style.background = "rgba(0,0,0,0.6)";
+    }
+
+    // 슬라이더 이미지 클릭 이벤트 - 20번째 이미지 클릭 시 이스터에그 카운터 증가
+    imageElement.addEventListener('click', () => {
+      if (currentIndex === 19) { // 20번째 이미지 (인덱스 19)
         eggClickCount++;
+        if (eggClickCount > 13) eggClickCount = 13;
+
         counterText.textContent = `${eggClickCount} / 13`;
-        counterText.style.display = 'block';
+        counterText.style.display = "block";
 
         if (eggClickCount === 13) {
-          playerDiv.style.display = 'block';
+          playerDiv.style.display = "block";
           counterText.textContent = `🎉 완료!`;
           counterText.style.background = '#ff85c1';
           setTimeout(() => {
@@ -582,41 +562,59 @@
             counterText.style.background = 'rgba(0,0,0,0.6)';
           }, 2500);
 
-          // 부드럽게 등장 효과
           playerDiv.style.opacity = 0;
           playerDiv.style.transition = "opacity 1s";
           setTimeout(() => playerDiv.style.opacity = 1, 10);
 
           alert("🎊 이스터에그가 해제되었습니다!");
-        } else if (eggClickCount > 13) {
-          eggClickCount = 13;
         }
       }
     });
 
-    function resetEggCounter() {
-      eggClickCount = 0;
-      counterText.style.display = 'none';
-      counterText.textContent = '0 / 13';
-      playerDiv.style.display = 'none';
-      playerDiv.style.opacity = 0;
-      counterText.style.background = 'rgba(0,0,0,0.6)';
-    }
-
+    // 이스터에그 플레이어용 음성 재생 함수
     function playEasterEgg(type) {
-      let src;
-      switch(type) {
-        case 'normal': src = sounds[19].normal; break;
-        case 'rare': src = sounds[19].rare; break;
-        case 'special': src = sounds[19].special; break;
-        default: return;
+      let audioSrc = "";
+      switch (type) {
+        case 'normal':
+          audioSrc = 'sounds/easter_normal.mp3';
+          break;
+        case 'rare':
+          audioSrc = 'sounds/easter_rare.mp3';
+          break;
+        case 'special':
+          audioSrc = 'sounds/easter_special.mp3';
+          break;
+        default:
+          return;
       }
-      playSound(src, `이스터에그 - ${type}`);
+
+      if (audioPlayer) {
+        audioPlayer.pause();
+        clearInterval(progressInterval);
+      }
+      audioPlayer = new Audio(audioSrc);
+      audioPlayer.volume = volumeBar.value;
+      audioPlayer.play();
+
+      miniPlayer.style.display = "flex";
+      miniTitle.textContent = `🎧 이스터에그 음성 (${type})`;
+      progressBar.value = 0;
+      progressBar.max = 100;
+
+      progressInterval = setInterval(() => {
+        if (audioPlayer.duration) {
+          progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        }
+      }, 500);
+
+      audioPlayer.onended = () => {
+        clearInterval(progressInterval);
+        miniPlayer.style.display = "none";
+      };
     }
 
-    // 초기 화면 설정
+    // 초기 표시 세팅
     updateDisplay();
-    resetEggCounter();
   </script>
 </body>
 </html>
