@@ -7,7 +7,6 @@ const soundButton = document.getElementById("sound-btn");
 // 이미지 경로 설정
 const images = Array.from({ length: totalItems }, (_, i) => `images/image${i + 1}.jpg`);
 
-// 각 이미지에 해당하는 3개 사운드 경로 설정
 const sounds = Array.from({ length: totalItems }, (_, i) => ({
   default1: `sounds/sound${i + 1}_1.mp3`,
   default2: `sounds/sound${i + 1}_2.mp3`,
@@ -16,10 +15,7 @@ const sounds = Array.from({ length: totalItems }, (_, i) => ({
 
 function updateDisplay() {
   imageElement.src = images[currentIndex];
-
- // ✅ 인덱스 표시 업데이트
-  const counter = document.getElementById("counter");
-  counter.textContent = `${currentIndex + 1} / ${totalItems}`;
+  document.getElementById("counter").textContent = `${currentIndex + 1} / ${totalItems}`;
 }
 
 document.getElementById("prev-btn").addEventListener("click", () => {
@@ -49,22 +45,16 @@ soundButton.addEventListener("click", () => {
   audio.play();
 });
 
-/*
-// 자동 슬라이드
-setInterval(() => {
-  currentIndex = (currentIndex + 1) % totalItems;
-  updateDisplay();
-}, 5000);
-*/
 updateDisplay();
 
+// 🎉 이스터에그 기능 (슬라이더 이미지 클릭)
 let eggClickCount = 0;
-const eggImg = document.getElementById('easter-egg-img');
 const playerDiv = document.getElementById('easter-egg-player');
 const counterText = document.getElementById('click-counter');
 
-if (eggImg) {
-  eggImg.addEventListener('click', () => {
+// 메인 이미지 클릭 시
+imageElement.addEventListener('click', () => {
+  if (currentIndex === 19) {
     eggClickCount++;
     counterText.innerText = `${eggClickCount} / 13`;
     counterText.style.display = 'block';
@@ -84,11 +74,12 @@ if (eggImg) {
 
       alert("🎊 이스터에그가 해제되었습니다!");
     } else if (eggClickCount > 13) {
-      eggClickCount = 13; // 클릭수 제한
+      eggClickCount = 13; // 제한
     }
-  });
-}
+  }
+});
 
+// 이스터에그 음성 재생
 function playEasterEgg(type) {
   let src = '';
   switch (type) {
@@ -99,4 +90,3 @@ function playEasterEgg(type) {
   const audio = new Audio(src);
   audio.play();
 }
-
