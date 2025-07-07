@@ -342,37 +342,35 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
     let probabilityBoostActive = false;
     const probabilityBoostMsg = document.getElementById("probability-boost-msg");
 
-function getRarityWithProbabilityBoost() {
-  let baseRandom = Math.random();
-  let rarity = "normal";
+    function getRarityWithProbabilityBoost() {
+      let baseRandom = Math.random();
+      let rarity = "normal";
 
-  if (sameRarityCount >= 3) {
-  probabilityBoostActive = true;
-  probabilityBoostMsg.style.display = "block";
+      if (sameRarityCount >= 3) {
+        probabilityBoostActive = true;
+        probabilityBoostMsg.style.display = "block";
 
-  if (baseRandom < 0.25) {
-    rarity = "special";   // 25%
-  } else if (baseRandom < 0.60) {
-    rarity = "rare";      // 35%
-  } else {
-    rarity = "normal";    // 40%
-  }
-} else {
-  probabilityBoostActive = false;
-  probabilityBoostMsg.style.display = "none";
+        if (baseRandom < 0.25) {
+          rarity = "special";   // 25%
+        } else if (baseRandom < 0.60) {
+          rarity = "rare";      // 35%
+        } else {
+          rarity = "normal";    // 40%
+        }
+      } else {
+        probabilityBoostActive = false;
+        probabilityBoostMsg.style.display = "none";
 
-  if (baseRandom < 0.20) {
-    rarity = "special";   // 20%
-  } else if (baseRandom < 0.50) {
-    rarity = "rare";      // 30%
-  } else {
-    rarity = "normal";    // 50%
-  }
-}
-
-
-  return rarity;
-}
+        if (baseRandom < 0.20) {
+          rarity = "special";   // 20%
+        } else if (baseRandom < 0.50) {
+          rarity = "rare";      // 30%
+        } else {
+          rarity = "normal";    // 50%
+        }
+      }
+      return rarity;
+    }
 
     let currentIndex = 0;
     const imageElement = document.getElementById("main-image");
@@ -415,282 +413,179 @@ function getRarityWithProbabilityBoost() {
       "무릎강조중 하유",
       "산타입니다 하유",
       "푸른뱀이당 하유",
-      "밤도시볼턱 하유",
-      "사인귀파줘 하유"
+      "진짜노말임 하유",
+      "마지막특별하유"
     ];
 
-    const voiceNames = [
-      ["보쌈하는중", "눈감으면이런느낌", "이정도로붙으면곤란"],
-      ["발렌타인잘보내", "알파벳시동", "알파벳"],
-      ["세팅중인", "안찐득찐득", "찾았다"],
-      ["그런취향", "선택지", "카운트다운"],
-      ["잘거면지금", "허벅지요", "내가이럴줄꼬르륵"],
-      ["그냥야로끝나면", "날씨가덥다", "여보야자기야"],
-      ["원하는호칭", "물좀마실게", "오쁘으어오빠"],
-      ["프로바니걸", "야발좋아해", "3시간하면저죽어욧"],
-      ["이러면안들리지바보", "호해봐호", "수고했어오늘도"],
-      ["다오셨을거니까", "심장박동", "카운트다운"],
-      ["깜빡미성안녕", "두근두근", "해달라는거다해줘"],
-      ["그루밍주인님", "바보", "바보멍청이바보"],
-      ["왕년에", "치즈를안잡아먹지", "혀놀림"],
-      ["저기터져나가는세상", "이거는알아서상상", "펀치숨소리"],
-      ["오빠는어캐부를건데", "자기야자기야자기야", "사랑해사랑해사랑해"],
-      ["내눈보고있는거맞지", "꼬르륵왜잡히냐구", "배방구스페셜"],
-      ["깔아뭉겠어", "저ㅆㅆ가", "뽀뽀뽀"],
-      ["정신이들어", "나는뱀이고", "레로레로"],
-      ["같이달보러", "너무쎄게아퍼", "ㅗㅜㅑ"],
-      ["에취에으흐으응", "여성호르몬과다", "두근뽀뽀후우"],
-    ];
+    // 배경색 바꾸기 함수
+    function updateBackground(index) {
+      document.body.className = ''; // 기존 클래스 제거
+      document.body.classList.add(`bg${index + 1}`);
+    }
 
-    let audioPlayer = null;
-    let progressInterval = null;
+    // 이미지, 타이틀, 배경, 카운터 업데이트
+    function updateDisplay(index) {
+      imageElement.src = images[index];
+      imageElement.alt = titles[index];
+      document.getElementById("image-title").textContent = titles[index];
+      counter.textContent = `${index + 1} / ${totalItems}`;
+      updateBackground(index);
+    }
 
-    // 이스터에그 해금 여부 세션스토리지에서 불러오기
-    let easterEggUnlocked = sessionStorage.getItem('easterEggUnlocked') === 'true';
-    let eggClickCount = parseInt(sessionStorage.getItem('eggClickCount'), 10) || 0;
+    // 좌우 버튼
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      updateDisplay(currentIndex);
+      resetGachaBox();
+    });
 
-    // 슬라이드별 배경 클래스 배열
-    const normalBgClasses = [
-      "bg1","bg2","bg3","bg4","bg5","bg6","bg7","bg8","bg9","bg10",
-      "bg11","bg12","bg13","bg14","bg15","bg16","bg17","bg18","bg19","bg20"
-    ];
+    document.getElementById("next-btn").addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % totalItems;
+      updateDisplay(currentIndex);
+      resetGachaBox();
+    });
 
-    function updateDisplay() {
-      imageElement.src = images[currentIndex];
+    // 이스터에그 클릭 카운터 (20번 이미지에서만 카운트)
+    let eggClickCount = 0;
+    const eggClickThreshold = 13;
 
-      // 가챠 배경이 아닐 때만 슬라이드 배경 적용
-      if (!document.body.classList.contains("rare-bg") && !document.body.classList.contains("special-bg")) {
-        document.body.className = "";
-        document.body.classList.add(normalBgClasses[currentIndex]);
+    imageElement.addEventListener("click", () => {
+      if (currentIndex === 19) { // 20번째 이미지 index = 19
+        eggClickCount++;
+        eggClickCounter.textContent = `${eggClickCount} / ${eggClickThreshold}`;
+        eggClickCounter.style.display = "block";
+
+        if (eggClickCount >= eggClickThreshold) {
+          eggPlayer.style.display = "block";
+        }
+      }
+    });
+
+    // 가챠 버튼 클릭 시 실행 함수
+    function gachaButtonHandler() {
+      let rarity = getRarityWithProbabilityBoost();
+
+      if (rarity === lastRarity) {
+        sameRarityCount++;
+      } else {
+        sameRarityCount = 1;
+        lastRarity = rarity;
       }
 
-      counter.textContent = `${currentIndex + 1} / ${totalItems}`;
+      // 사운드 경로
+      const soundPath = sounds[currentIndex][rarity];
+      playAudio(soundPath);
+
+      // 가챠 박스 텍스트 및 스타일 변경
+      gachaBox.textContent = rarity.toUpperCase();
+      gachaBox.className = "gacha-box";
+
+      if (rarity === "normal") {
+        gachaBox.classList.add("rarity-normal");
+        document.body.className = `bg${currentIndex + 1} normal-bg`;
+      } else if (rarity === "rare") {
+        gachaBox.classList.add("rarity-rare");
+        document.body.className = `bg${currentIndex + 1} rare-bg`;
+      } else if (rarity === "special") {
+        gachaBox.classList.add("rarity-special");
+        document.body.className = `bg${currentIndex + 1} special-bg`;
+      }
+
+      // 확률업 메시지 노출 여부는 getRarityWithProbabilityBoost() 내에서 처리
+    }
+
+    // 가챠 박스 텍스트 초기화 함수
+    function resetGachaBox() {
       gachaBox.textContent = "-";
       gachaBox.className = "gacha-box rarity-normal";
-      document.getElementById("image-title").textContent = titles[currentIndex];
-      soundButton.disabled = false;
-      hideEggCounterIfNeeded();
-
-      eggPlayer.style.display = easterEggUnlocked ? "block" : "none";
-
-      if (currentIndex === 19) {
-        eggClickCounter.style.display = "block";
-        eggClickCounter.textContent = `${eggClickCount} / 13`;
-      } else {
-        eggClickCounter.style.display = "none";
-        eggClickCount = 0;
-        sessionStorage.setItem('eggClickCount', eggClickCount);
-      }
-
-      if (audioPlayer) {
-        audioPlayer.pause();
-        audioPlayer = null;
-      }
-      miniPlayer.style.display = "none";
+      probabilityBoostMsg.style.display = "none";
     }
 
-    // 다음 슬라이드
-    function nextSlide() {
-      if (currentIndex < totalItems - 1) {
-        currentIndex++;
-        updateDisplay();
-      }
-    }
-
-    // 이전 슬라이드
-    function prevSlide() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateDisplay();
-      }
-    }
-
-    // 가챠 버튼 클릭
-    soundButton.addEventListener("click", () => {
-      soundButton.disabled = true;
-      gachaBox.textContent = "🎲 돌리는중...";
-      gachaBox.className = "gacha-box rarity-normal";
-
-      // 랜덤 확률 (간단 예: 10% rare, 3% special)
-      const randomNum = Math.random();
-    const rarity = getRarityWithProbabilityBoost();
-
-  if (rarity === lastRarity) {
-  sameRarityCount++;
-} else {
-  sameRarityCount = 1;
-  lastRarity = rarity;
-}
-
-      // 오디오 소스 선택
-      let audioSrc;
-      let label;
-      if (rarity === "normal") {
-        audioSrc = sounds[currentIndex].normal;
-        label = voiceNames[currentIndex][0];
-      } else if (rarity === "rare") {
-        audioSrc = sounds[currentIndex].rare;
-        label = voiceNames[currentIndex][1];
-      } else {
-        audioSrc = sounds[currentIndex].special;
-        label = voiceNames[currentIndex][2];
-      }
-
-      // 0.7초 후 결과 표시 및 재생
-      setTimeout(() => {
-        gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
-        gachaBox.className = `gacha-box rarity-${rarity}`;
-        document.body.className = rarity + "-bg";
-
-        playAudio(audioSrc, label);
-        soundButton.disabled = false;
-      }, 700);
-    });
+    // 사운드 재생 및 미니플레이어 제어 변수
+    let audio = null;
+    let isPaused = false;
 
     // 오디오 재생 함수
-    function playAudio(src, title) {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        audioPlayer = null;
+    function playAudio(src) {
+      if (audio) {
+        audio.pause();
+        audio = null;
       }
+      audio = new Audio(src);
+      audio.volume = volumeBar.value;
+      audio.play();
 
-      audioPlayer = new Audio(src);
-      audioPlayer.volume = volumeBar.value;
-      audioPlayer.play();
-
-      miniTitle.textContent = title;
+      // 미니 플레이어 보이기
       miniPlayer.style.display = "flex";
+      miniTitle.textContent = titles[currentIndex] + ` (${src.includes("special") ? "스페셜" : src.includes("2") ? "레어" : "노말"})`;
 
-      // 프로그래스 바 업데이트
-      progressBar.value = 0;
-      progressBar.max = 100;
+      // 프로그레스바 업데이트
+      audio.addEventListener("loadedmetadata", () => {
+        progressBar.max = Math.floor(audio.duration);
+        progressBar.value = 0;
+      });
 
-      if (progressInterval) clearInterval(progressInterval);
-
-      progressInterval = setInterval(() => {
-        if (audioPlayer && audioPlayer.duration) {
-          progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      audio.addEventListener("timeupdate", () => {
+        if (!isPaused) {
+          progressBar.value = Math.floor(audio.currentTime);
         }
-      }, 250);
+      });
 
-   audioPlayer.onended = () => {
-  miniPlayer.style.display = "none";
-  clearInterval(progressInterval);
-
-  // 가챠박스 부드럽게 사라지기
-  gachaBox.classList.add("fadeout");
-
-  setTimeout(() => {
-    // 가챠박스 텍스트와 클래스 초기화 및 fadeout 제거
-    gachaBox.textContent = "-";
-    gachaBox.className = "gacha-box rarity-normal";
-
-    // 배경 부드럽게 원래대로 복구
-    document.body.className = "";
-    document.body.classList.add(normalBgClasses[currentIndex]);
-  }, 600);  // CSS transition 시간과 맞춤
-};
-
-    
-  // 가챠박스 리셋
-  gachaBox.textContent = "-";
-  gachaBox.className = "gacha-box rarity-normal";
-};
+      audio.addEventListener("ended", () => {
+        miniPlayer.style.display = "none";
+      });
     }
 
-    // 프로그래스 바 수동 이동
-    progressBar.addEventListener("input", () => {
-      if (audioPlayer && audioPlayer.duration) {
-        audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
-      }
-    });
-
-    // 볼륨 조절
-    volumeBar.addEventListener("input", () => {
-      if (audioPlayer) {
-        audioPlayer.volume = volumeBar.value;
-      }
-    });
-
-    // 일시정지 버튼
+    // 미니 플레이어 컨트롤 이벤트
     pauseBtn.addEventListener("click", () => {
-      if (!audioPlayer) return;
-      if (audioPlayer.paused) {
-        audioPlayer.play();
+      if (!audio) return;
+      if (audio.paused) {
+        audio.play();
         pauseBtn.textContent = "⏸️";
+        isPaused = false;
       } else {
-        audioPlayer.pause();
+        audio.pause();
         pauseBtn.textContent = "▶️";
+        isPaused = true;
       }
     });
 
-    // 플레이어 닫기
     closeBtn.addEventListener("click", () => {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        audioPlayer = null;
+      if (audio) {
+        audio.pause();
+        audio = null;
       }
       miniPlayer.style.display = "none";
-
-// 배경 원래대로 복구
-  document.body.className = "";
-  document.body.classList.add(normalBgClasses[currentIndex]);
     });
 
-    // 이미지 클릭(이스터에그 카운트)
-    imageElement.addEventListener("click", () => {
-      if (currentIndex === 19 && !easterEggUnlocked) {
-        eggClickCount++;
-        if (eggClickCount >= 13) {
-          easterEggUnlocked = true;
-          sessionStorage.setItem('easterEggUnlocked', 'true');
-          eggPlayer.style.display = "block";
-          eggClickCounter.style.display = "none";
-          alert("🌟 이스터에그가 해금되었습니다!");
-        }
-        sessionStorage.setItem('eggClickCount', eggClickCount);
-        eggClickCounter.textContent = `${eggClickCount} / 13`;
+    progressBar.addEventListener("input", () => {
+      if (audio) {
+        audio.currentTime = progressBar.value;
       }
     });
 
-    // 이스터에그 음성 플레이어 버튼
-    eggPlayer.querySelectorAll("button").forEach(button => {
-      button.addEventListener("click", () => {
-        const type = button.dataset.type;
-        let audioSrc;
-        let label;
+    volumeBar.addEventListener("input", () => {
+      if (audio) {
+        audio.volume = volumeBar.value;
+      }
+    });
 
-        if (type === "normal") {
-          audioSrc = sounds[19].normal;
-          label = voiceNames[19][0];
-        } else if (type === "rare") {
-          audioSrc = sounds[19].rare;
-          label = voiceNames[19][1];
-        } else {
-          audioSrc = sounds[19].special;
-          label = voiceNames[19][2];
-        }
+    // 이스터에그 플레이어 버튼 클릭 이벤트
+    eggPlayer.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const type = btn.getAttribute("data-type");
+        const eggAudioPath = sounds[19][type]; // 20번째 이미지 음성
 
-        playAudio(audioSrc, label);
+        playAudio(eggAudioPath);
       });
     });
 
-    // 이전, 다음 버튼 이벤트
- document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("next-btn").addEventListener("click", nextSlide);
-  document.getElementById("prev-btn").addEventListener("click", prevSlide);
+    // 초기 화면 업데이트
+    updateDisplay(currentIndex);
+    resetGachaBox();
 
-  // 초기 화면 업데이트
-  updateDisplay();
-});
-    // 이스터에그 카운터 숨기기/보이기 함수
-    function hideEggCounterIfNeeded() {
-      if (currentIndex === 19 && !easterEggUnlocked) {
-        eggClickCounter.style.display = "block";
-      } else {
-        eggClickCounter.style.display = "none";
-      }
-    }
+    // 가챠 버튼 이벤트 등록
+    soundButton.addEventListener("click", gachaButtonHandler);
   </script>
 </body>
 </html>
