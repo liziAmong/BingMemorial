@@ -557,42 +557,7 @@ function getRarityWithProbabilityBoost() {
   soundButton.disabled = false;
 }, 700);
 
-    // 오디오 재생 함수
-    function playAudio(src, title) {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        audioPlayer = null;
-      }
-
-      audioPlayer = new Audio(src);
-      audioPlayer.volume = volumeBar.value;
-      audioPlayer.play();
-
-      miniTitle.textContent = title;
-      miniPlayer.style.display = "flex";
-
-      // 프로그래스 바 업데이트
-      progressBar.value = 0;
-      progressBar.max = 100;
-
-      if (progressInterval) clearInterval(progressInterval);
-
-      progressInterval = setInterval(() => {
-        if (audioPlayer && audioPlayer.duration) {
-          progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        }
-      }, 250);
-
-      audioPlayer.onended = () => {
-        miniPlayer.style.display = "none";
-        clearInterval(progressInterval);
-
-// 배경 원래대로 복구
-  document.body.className = "";
-  document.body.classList.add(normalBgClasses[currentIndex]);
-      };
-
-    }
+    
 
     // 프로그래스 바 수동 이동
     progressBar.addEventListener("input", () => {
@@ -670,6 +635,43 @@ function getRarityWithProbabilityBoost() {
         playAudio(audioSrc, label);
       });
     });
+
+// 오디오 재생 함수
+    function playAudio(src, title) {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+
+      audioPlayer = new Audio(src);
+      audioPlayer.volume = volumeBar.value;
+      audioPlayer.play();
+
+      miniTitle.textContent = title;
+      miniPlayer.style.display = "flex";
+
+      // 프로그래스 바 업데이트
+      progressBar.value = 0;
+      progressBar.max = 100;
+
+      if (progressInterval) clearInterval(progressInterval);
+
+      progressInterval = setInterval(() => {
+        if (audioPlayer && audioPlayer.duration) {
+          progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        }
+      }, 250);
+
+      audioPlayer.onended = () => {
+        miniPlayer.style.display = "none";
+        clearInterval(progressInterval);
+
+// 배경 원래대로 복구
+  document.body.className = "";
+  document.body.classList.add(normalBgClasses[currentIndex]);
+      };
+
+    }
 
     // 이전, 다음 버튼 이벤트
     document.getElementById("next-btn").addEventListener("click", () => {
