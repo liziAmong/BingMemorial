@@ -463,12 +463,24 @@
     }
 
     // 이스터에그 음성 재생 함수
-    function playEasterEggAudio(type) {
-      if (!easterEggUnlocked) return;
-      const audioSrc = sounds[currentIndex][type];
-      if (!audioSrc) return;
-      playAudio(audioSrc, label);
-    }
+  function playEasterEggAudio(type) {
+  if (!easterEggUnlocked) return;
+  const audioSrc = sounds[currentIndex][type];
+  if (!audioSrc) return;
+
+  let label;
+  if (type === 'normal') {
+    label = voiceNames[currentIndex][0];
+  } else if (type === 'rare') {
+    label = voiceNames[currentIndex][1];
+  } else if (type === 'special') {
+    label = voiceNames[currentIndex][2];
+  } else {
+    label = "음성";
+  }
+
+  playAudio(audioSrc, label);
+}
 
     // 이스터에그 클릭 카운터 업데이트 & 해금 체크
     function incrementEggClick() {
