@@ -22,6 +22,15 @@
       margin-bottom: 10px;
     }
 
+    /* iframe 크기 강제 지정 */
+    #youtube-player iframe {
+      width: 100% !important;
+      max-width: 640px;
+      height: 360px !important;
+      display: block;
+      margin: 0 auto;
+    }
+
     #video-info {
       margin-bottom: 10px;
       font-weight: bold;
@@ -111,7 +120,7 @@
   <!-- YouTube iframe API 먼저 불러오기 -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
-  <!-- 별도 js파일 연결 (또는 inline script) -->
+  <!-- 별도 js파일 연결 -->
   <script src="youtube.js"></script>
 </body>
 </html>
