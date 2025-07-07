@@ -444,7 +444,7 @@
       audioPlayer = new Audio(src);
       audioPlayer.volume = volumeBar.value;
       audioPlayer.play();
-      miniTitle.textContent = `[${titles[currentIndex]}] ${gachaBox.textContent}`;
+      miniTitle.textContent = label;
       miniPlayer.style.display = "flex";
       progressBar.value = 0;
       progressBar.max = 100;
