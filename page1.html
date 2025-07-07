@@ -487,5 +487,45 @@
     soundButton.addEventListener("click", playGachaEffect);
     updateDisplay();
   </script>
+<!-- 20번째 이미지 -->
+<div style="position: relative; display: inline-block;">
+  <img id="easter-egg-img" src="images/image20.jpg" alt="20번 이미지" style="cursor:pointer;" />
+  <div id="click-counter" style="
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 12px;
+      border-radius: 8px;
+      display: none;
+  ">0 / 13</div>
+</div>
+
+<!-- 이스터에그 음성 플레이어 -->
+<div id="easter-egg-player" style="
+    display: none;
+    margin-top: 15px;
+    padding: 10px;
+    border: 2px dashed #ff8be7;
+    background: #fff0fb;
+    border-radius: 12px;
+    animation: sparkle 1s ease-out infinite alternate;
+">
+  <p>🌟 비밀 발견! 원하는 음성을 들어보세요:</p>
+  <button onclick="playEasterEgg('normal')">노말 음성</button>
+  <button onclick="playEasterEgg('rare')">레어 음성</button>
+  <button onclick="playEasterEgg('special')">스페셜 음성</button>
+</div>
+
+<!-- 효과 애니메이션 -->
+<style>
+@keyframes sparkle {
+  0% { box-shadow: 0 0 5px #ffb3ec; }
+  100% { box-shadow: 0 0 20px #ff6fd8; }
+}
+</style>
+
 </body>
 </html>
