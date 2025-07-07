@@ -275,6 +275,9 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
     <div id="image-title">들어오세요 하유</div>
     <div id="easter-egg-click-counter">0 / 13</div>
     <div id="gacha-box" class="gacha-box rarity-normal">-</div>
+<div id="probability-boost-msg" style="margin-top: 8px; color: #ff4081; font-weight: bold; display: none;">
+  🔥 확률 업 적용 중!
+</div>
     <div class="controls">
       <button id="sound-btn">🎲 가챠 돌리기</button>
       <button id="prev-btn">◀ 이전</button>
@@ -323,6 +326,48 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
     });
 
     const totalItems = 20;
+    let lastRarity = null;
+    let sameRarityCount = 0;
+    let probabilityBoostActive = false;
+    const probabilityBoostMsg = document.getElementById("probability-boost-msg");
+
+function getRarityWithProbabilityBoost() {
+  let baseRandom = Math.random();
+  let rarity = "normal";
+
+  if (sameRarityCount >= 5) {
+    probabilityBoostActive = true;
+    probabilityBoostMsg.style.display = "block";
+
+    if (lastRarity === "normal") {
+      if (baseRandom < 0.12) rarity = "rare";
+      else if (baseRandom < 0.18) rarity = "special";
+      else rarity = "normal";
+    } else if (lastRarity === "rare") {
+      if (baseRandom < 0.06) rarity = "special";
+      else if (baseRandom < 0.18) rarity = "normal";
+      else rarity = "rare";
+    } else { // special
+      if (baseRandom < 0.06) rarity = "rare";
+      else if (baseRandom < 0.18) rarity = "normal";
+      else rarity = "special";
+    }
+  } else {
+    probabilityBoostActive = false;
+    probabilityBoostMsg.style.display = "none";
+
+    if (baseRandom < 0.03) {
+      rarity = "special";
+    } else if (baseRandom < 0.13) {
+      rarity = "rare";
+    } else {
+      rarity = "normal";
+    }
+  }
+
+  return rarity;
+}
+
     let currentIndex = 0;
     const imageElement = document.getElementById("main-image");
     const gachaBox = document.getElementById("gacha-box");
@@ -462,12 +507,14 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
 
       // 랜덤 확률 (간단 예: 10% rare, 3% special)
       const randomNum = Math.random();
-      let rarity = "normal";
-      if (randomNum < 0.03) {
-        rarity = "special";
-      } else if (randomNum < 0.13) {
-        rarity = "rare";
-      }
+    const rarity = getRarityWithProbabilityBoost();
+
+  if (rarity === lastRarity) {
+  sameRarityCount++;
+} else {
+  sameRarityCount = 1;
+  lastRarity = rarity;
+}
 
       // 오디오 소스 선택
       let audioSrc;
