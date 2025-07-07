@@ -16,6 +16,16 @@
       align-items: center;
       min-height: 100vh;
       transition: background 0.8s ease;
+
+.gacha-box {
+  transition: background-color 0.6s ease, color 0.6s ease, opacity 0.6s ease;
+  opacity: 1;
+}
+
+.gacha-box.fadeout {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
     }
     /* 슬라이드별 배경색 */
 body.bg1  { background: linear-gradient(135deg, #5b5b78, #eac6d9); }   /* 어두운 쪽빛 → 연핑크 */
@@ -562,14 +572,23 @@ function getRarityWithProbabilityBoost() {
         }
       }, 250);
 
-      audioPlayer.onended = () => {
-        miniPlayer.style.display = "none";
-        clearInterval(progressInterval);
+   audioPlayer.onended = () => {
+  miniPlayer.style.display = "none";
+  clearInterval(progressInterval);
 
-// 배경 원래대로 복구
-  document.body.className = "";
-  document.body.classList.add(normalBgClasses[currentIndex]);
-      };
+  // 가챠박스 부드럽게 사라지기
+  gachaBox.classList.add("fadeout");
+
+  setTimeout(() => {
+    // 가챠박스 텍스트와 클래스 초기화 및 fadeout 제거
+    gachaBox.textContent = "-";
+    gachaBox.className = "gacha-box rarity-normal";
+
+    // 배경 부드럽게 원래대로 복구
+    document.body.className = "";
+    document.body.classList.add(normalBgClasses[currentIndex]);
+  }, 600);  // CSS transition 시간과 맞춤
+};
 
     
   // 가챠박스 리셋
