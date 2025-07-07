@@ -16,6 +16,7 @@ let currentIndex = 0;
 let player;
 let autoplayEnabled = true;
 let randomEnabled = false;
+let isEventListenerAdded = false;
 
 function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
@@ -25,11 +26,15 @@ function updateVideoInfo() {
 function loadVideo(index) {
   if (player && typeof player.loadVideoById === "function") {
     player.loadVideoById(videoIds[index]);
+    // 재생 전 음소거 → 음소거 해제 (autoplay 정책 대응)
+    player.mute();
+    player.unMute();
+
     updateVideoInfo();
   }
 }
 
-// 반드시 전역에 선언되어야 함 (YouTube iframe API 요구)
+// YouTube iframe API가 준비되면 호출되는 함수 (전역에 꼭 있어야 함)
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player('youtube-player', {
     height: '360',
@@ -37,10 +42,13 @@ window.onYouTubeIframeAPIReady = function () {
     videoId: videoIds[currentIndex],
     playerVars: {
       autoplay: 1,
-      mute: 0
+      mute: 1 // 최초 음소거 상태로 시작
     },
     events: {
-      'onReady': onPlayerReady,
+      'onReady': (event) => {
+        event.target.unMute(); // 음소거 해제
+        onPlayerReady();
+      },
       'onStateChange': onPlayerStateChange
     }
   });
@@ -48,6 +56,9 @@ window.onYouTubeIframeAPIReady = function () {
 
 function onPlayerReady() {
   updateVideoInfo();
+
+  if (isEventListenerAdded) return;
+  isEventListenerAdded = true;
 
   document.getElementById("prev-video").addEventListener("click", () => {
     currentIndex = randomEnabled
