@@ -526,14 +526,26 @@ function getRarityWithProbabilityBoost() {
       }
 
       // 0.7초 후 결과 표시 및 재생
-      setTimeout(() => {
-        gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
-        gachaBox.className = `gacha-box rarity-${rarity}`;
-        document.body.className = rarity + "-bg";
+     setTimeout(() => {
+  gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
+  gachaBox.className = `gacha-box rarity-${rarity}`;
 
-        playAudio(audioSrc, label);
-        soundButton.disabled = false;
-      }, 700);
+  if (rarity === "normal") {
+    // 노말이면 슬라이드별 배경 유지
+    normalBgClasses.forEach(cls => document.body.classList.remove(cls));
+    document.body.classList.add(normalBgClasses[currentIndex]);
+    document.body.classList.remove("rare-bg", "special-bg");
+  } else {
+    // 레어나 스페셜이면 해당 배경 클래스만 적용
+    document.body.classList.remove(...normalBgClasses);
+    document.body.classList.remove("rare-bg", "special-bg");
+    document.body.classList.add(rarity + "-bg");
+  }
+
+  playAudio(audioSrc, label);
+  soundButton.disabled = false;
+}, 700);
+
     });
 
     // 오디오 재생 함수
@@ -566,10 +578,18 @@ function getRarityWithProbabilityBoost() {
         miniPlayer.style.display = "none";
         clearInterval(progressInterval);
 
-// 배경 원래대로 복구
-  document.body.className = "";
+// 이 부분을 아래처럼 수정
+  normalBgClasses.forEach(cls => document.body.classList.remove(cls));
   document.body.classList.add(normalBgClasses[currentIndex]);
-      };
+  document.body.classList.remove("rare-bg", "special-bg");
+
+  // 가챠박스 부드럽게 사라지기
+  gachaBox.classList.add("fadeout");
+  setTimeout(() => {
+    gachaBox.textContent = "-";
+    gachaBox.className = "gacha-box rarity-normal";
+  }, 600);
+};
 
     }
 
@@ -608,9 +628,10 @@ function getRarityWithProbabilityBoost() {
       miniPlayer.style.display = "none";
 
 // 배경 원래대로 복구
-  document.body.className = "";
+normalBgClasses.forEach(cls => document.body.classList.remove(cls));
   document.body.classList.add(normalBgClasses[currentIndex]);
-    });
+  document.body.classList.remove("rare-bg", "special-bg");
+});
 
     // 이미지 클릭(이스터에그 카운트)
     imageElement.addEventListener("click", () => {
