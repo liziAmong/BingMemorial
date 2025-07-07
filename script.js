@@ -57,3 +57,46 @@ setInterval(() => {
 }, 5000);
 */
 updateDisplay();
+
+let eggClickCount = 0;
+const eggImg = document.getElementById('easter-egg-img');
+const playerDiv = document.getElementById('easter-egg-player');
+const counterText = document.getElementById('click-counter');
+
+if (eggImg) {
+  eggImg.addEventListener('click', () => {
+    eggClickCount++;
+    counterText.innerText = `${eggClickCount} / 13`;
+    counterText.style.display = 'block';
+
+    if (eggClickCount === 13) {
+      playerDiv.style.display = 'block';
+      counterText.innerText = `🎉 완료!`;
+      counterText.style.background = '#ff85c1';
+      setTimeout(() => {
+        counterText.style.display = 'none';
+      }, 2000);
+
+      // 부드럽게 등장
+      playerDiv.style.opacity = 0;
+      playerDiv.style.transition = "opacity 1s";
+      setTimeout(() => playerDiv.style.opacity = 1, 10);
+
+      alert("🎊 이스터에그가 해제되었습니다!");
+    } else if (eggClickCount > 13) {
+      eggClickCount = 13; // 클릭수 제한
+    }
+  });
+}
+
+function playEasterEgg(type) {
+  let src = '';
+  switch (type) {
+    case 'normal': src = 'sounds/sound20_1.mp3'; break;
+    case 'rare': src = 'sounds/sound20_2.mp3'; break;
+    case 'special': src = 'sounds/sound20_special.mp3'; break;
+  }
+  const audio = new Audio(src);
+  audio.play();
+}
+
