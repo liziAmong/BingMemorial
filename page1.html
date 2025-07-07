@@ -370,6 +370,37 @@
 
     function updateDisplay() {
       imageElement.src = images[currentIndex];
+// 이미지별 배경색 설정
+const bgColors = [
+  "#1b1b2f",    // 1. 밤의 어두운색
+  "#3c1f1f",    // 2. 약간 붉은 어두운색
+  "#f5f5f5",    // 3. 아침의 하양색
+  "#a6a6a6",    // 4. 오피스 바닥 그림자색
+  "#fff3b0",    // 5. 오피스 밝은 전등색
+  "#e0c1a0",    // 6. 안방의 아늑한색
+  "#9bb7d4",    // 7. 도시의 바깥색
+  "linear-gradient(135deg, #001f3f, #ffb6c1)",  // 8. 군청색, 핑크색
+  "#b0b0b0",    // 9. 셔츠 섞은 회색
+  "#8b3a3a",    // 10. 붉은 나무색
+  "#c2b280",    // 11. 라디오 느낌 색
+  "#ffe6f0",    // 12. 바니잠옷 색
+  "#2c3e50",    // 13. 밤하늘 색
+  "#87ceeb",    // 14. 밝은 하늘
+  "#ff8b94",    // 15. 밤 축제 색
+  "#dbe9f4",    // 16. 밝은 밤 별자리 색
+  "#9e6650",    // 17. 밤 벽난로 색
+  "#3f9ca8",    // 18. 푸른 뱀 색
+  "#1a1a2e",    // 19. 밤의 도시 색
+  "#f8f4f0"     // 20. 코튼 색
+];
+
+const bg = bgColors[currentIndex];
+if (bg.startsWith("linear-gradient")) {
+  document.body.style.background = bg;
+} else {
+  document.body.style.background = "";
+  document.body.style.backgroundColor = bg;
+}
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
       gachaBox.textContent = "-";
       gachaBox.className = "gacha-box rarity-normal";
