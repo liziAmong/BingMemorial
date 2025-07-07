@@ -427,7 +427,7 @@
       gachaBox.className = "gacha-box rolling";
 
       setTimeout(() => {
-        gachaBox.textContent = rarity === "normal" ? "노말 🎵" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
+        gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
         gachaBox.className = `gacha-box rarity-${rarity}`;
         document.body.className = rarity + "-bg";
 
