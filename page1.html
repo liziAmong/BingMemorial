@@ -427,7 +427,7 @@
       gachaBox.className = "gacha-box rolling";
 
       setTimeout(() => {
-        gachaBox.textContent = label;
+        gachaBox.textContent = rarity === 'normal' ? '노말' : (rarity === 'rare' ? '레어' : '스페셜');
         gachaBox.className = `gacha-box rarity-${rarity}`;
         document.body.className = rarity + "-bg";
 
@@ -436,7 +436,7 @@
       }, 700);
     }
 
-    function playAudio(src) {
+    function playAudio(src,label) {
       if (audioPlayer) {
         audioPlayer.pause();
         audioPlayer = null;
