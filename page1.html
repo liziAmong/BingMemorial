@@ -120,14 +120,8 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
       font-weight: bold;
       padding: 12px 20px;
       border-radius: 18px;
-      transition: background 0.4s ease, opacity 0.6s ease;  /* 추가: opacity transition */
-  opacity: 1; /* 기본은 불투명 */
+      transition: all 0.4s ease;
     }
-
-.gacha-box.fade-out {
-  opacity: 0; /* 사라질 때 투명도 0으로 */
-  transition: opacity 0.6s ease;
-}
     .rarity-normal {
       background-color: #f0f0f0;
       color: #555;
@@ -532,32 +526,52 @@ function getRarityWithProbabilityBoost() {
       }
 
       // 0.7초 후 결과 표시 및 재생
-  setTimeout(() => {
-  gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
-  gachaBox.className = `gacha-box rarity-${rarity}`;
-  
-  // 배경 클래스 초기화 후 추가
+      setTimeout(() => {
+        gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
+        gachaBox.className = `gacha-box rarity-${rarity}`;
+        document.body.className = rarity + "-bg";
+
+        playAudio(audioSrc, label);
+        soundButton.disabled = false;
+      }, 700);
+    });
+
+    // 오디오 재생 함수
+    function playAudio(src, title) {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+
+      audioPlayer = new Audio(src);
+      audioPlayer.volume = volumeBar.value;
+      audioPlayer.play();
+
+      miniTitle.textContent = title;
+      miniPlayer.style.display = "flex";
+
+      // 프로그래스 바 업데이트
+      progressBar.value = 0;
+      progressBar.max = 100;
+
+      if (progressInterval) clearInterval(progressInterval);
+
+      progressInterval = setInterval(() => {
+        if (audioPlayer && audioPlayer.duration) {
+          progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        }
+      }, 250);
+
+      audioPlayer.onended = () => {
+        miniPlayer.style.display = "none";
+        clearInterval(progressInterval);
+
+// 배경 원래대로 복구
   document.body.className = "";
-  document.body.classList.add(rarity + "-bg");
+  document.body.classList.add(normalBgClasses[currentIndex]);
+      };
 
-  // 메시지 표시 후 fade-out 애니메이션 시작
-  gachaBox.classList.remove('fade-out'); // 우선 투명도 1로 초기화
-
-  setTimeout(() => {
-    gachaBox.classList.add('fade-out');  // 투명도 0으로 변경
-
-    // fade-out 끝나면 메시지 및 클래스 초기화 (0.6초 후)
-    setTimeout(() => {
-      gachaBox.textContent = "-";
-      gachaBox.className = "gacha-box rarity-normal";
-    }, 600);
-  }, 2000); // 메시지 보여주는 시간 (2초)
-
-  playAudio(audioSrc, label);
-  soundButton.disabled = false;
-}, 700);
-
-    
+    }
 
     // 프로그래스 바 수동 이동
     progressBar.addEventListener("input", () => {
@@ -636,44 +650,20 @@ function getRarityWithProbabilityBoost() {
       });
     });
 
-// 오디오 재생 함수
-    function playAudio(src, title) {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        audioPlayer = null;
+    // 이전, 다음 버튼 이벤트
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (currentIndex < totalItems - 1) {
+        currentIndex++;
+        updateDisplay();
       }
+    });
 
-      audioPlayer = new Audio(src);
-      audioPlayer.volume = volumeBar.value;
-      audioPlayer.play();
-
-      miniTitle.textContent = title;
-      miniPlayer.style.display = "flex";
-
-      // 프로그래스 바 업데이트
-      progressBar.value = 0;
-      progressBar.max = 100;
-
-      if (progressInterval) clearInterval(progressInterval);
-
-      progressInterval = setInterval(() => {
-        if (audioPlayer && audioPlayer.duration) {
-          progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        }
-      }, 250);
-
-      audioPlayer.onended = () => {
-        miniPlayer.style.display = "none";
-        clearInterval(progressInterval);
-
-// 배경 원래대로 복구
-  document.body.className = "";
-  document.body.classList.add(normalBgClasses[currentIndex]);
-      };
-
-    }
-
-
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateDisplay();
+      }
+    });
 
     // 초기 화면 업데이트
     updateDisplay();
@@ -686,12 +676,6 @@ function getRarityWithProbabilityBoost() {
         eggClickCounter.style.display = "none";
       }
     }
-
-
-// ✅ 이전/다음 버튼에 함수 연결
-document.getElementById("next-btn").addEventListener("click", nextSlide);
-document.getElementById("prev-btn").addEventListener("click", prevSlide);
-
   </script>
 </body>
 </html>
