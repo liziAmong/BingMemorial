@@ -651,19 +651,8 @@ function getRarityWithProbabilityBoost() {
     });
 
     // 이전, 다음 버튼 이벤트
-    document.getElementById("next-btn").addEventListener("click", () => {
-      if (currentIndex < totalItems - 1) {
-        currentIndex++;
-        updateDisplay();
-      }
-    });
-
-    document.getElementById("prev-btn").addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateDisplay();
-      }
-    });
+ document.getElementById("next-btn").addEventListener("click", nextSlide);
+document.getElementById("prev-btn").addEventListener("click", prevSlide);
 
     // 초기 화면 업데이트
     updateDisplay();
