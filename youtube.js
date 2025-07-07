@@ -92,7 +92,7 @@ function updateVideoInfo() {
     document.body.style.backgroundColor = color;
   }
 }
-}
+
 
 
 
