@@ -12,19 +12,47 @@ const videoDates = [
   "2023-07-16", "2023-05-13", "2023-05-01"
 ];
 
-// localStorage에서 저장된 인덱스 불러오기
-const savedIndex = parseInt(localStorage.getItem("ytCurrentIndex"));
-let currentIndex;
-if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex < videoIds.length) {
-  currentIndex = savedIndex;
-} else {
-  currentIndex = 0;
-}
-
-let player;
+let currentIndex = 0;
+let player = null;
 let autoplayEnabled = true;
 let randomEnabled = false;
 let isEventListenerAdded = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedIndex = parseInt(localStorage.getItem("ytCurrentIndex"));
+  if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex < videoIds.length) {
+    currentIndex = savedIndex;
+  } else {
+    currentIndex = 0;
+  }
+
+  if (window.YT && YT.Player) {
+    window.onYouTubeIframeAPIReady();
+  }
+});
+
+window.onYouTubeIframeAPIReady = function () {
+  if (player) {
+    player.destroy();
+    player = null;
+  }
+  player = new YT.Player('youtube-player', {
+    height: '360',
+    width: '640',
+    videoId: videoIds[currentIndex],
+    playerVars: {
+      autoplay: 1,
+      mute: 1
+    },
+    events: {
+      'onReady': (event) => {
+        event.target.unMute();
+        onPlayerReady();
+      },
+      'onStateChange': onPlayerStateChange
+    }
+  });
+};
 
 function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
@@ -33,37 +61,14 @@ function updateVideoInfo() {
 
 function loadVideo(index) {
   if (player && typeof player.loadVideoById === "function") {
+    currentIndex = index;
     player.loadVideoById(videoIds[index]);
-    // 재생 전 음소거 → 음소거 해제 (autoplay 정책 대응)
     player.mute();
     player.unMute();
-
     updateVideoInfo();
-
-    // 현재 인덱스 저장 (새로고침/복귀 시 유지)
     localStorage.setItem("ytCurrentIndex", index);
   }
 }
-
-// YouTube iframe API가 준비되면 호출되는 함수 (전역에 꼭 있어야 함)
-window.onYouTubeIframeAPIReady = function () {
-  player = new YT.Player('youtube-player', {
-    height: '360',
-    width: '640',
-    videoId: videoIds[currentIndex],
-    playerVars: {
-      autoplay: 1,
-      mute: 1 // 최초 음소거 상태로 시작
-    },
-    events: {
-      'onReady': (event) => {
-        event.target.unMute(); // 음소거 해제
-        onPlayerReady();
-      },
-      'onStateChange': onPlayerStateChange
-    }
-  });
-};
 
 function onPlayerReady() {
   updateVideoInfo();
@@ -114,10 +119,3 @@ function getRandomIndex(current) {
   } while (index === current);
   return index;
 }
-
-// 새로고침 방지 (선택사항)
-window.addEventListener("keydown", function (e) {
-  if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
-    e.preventDefault();
-  }
-});
