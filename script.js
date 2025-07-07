@@ -1,4 +1,4 @@
-const totalItems = 20;
+/* const totalItems = 20;
 let currentIndex = 0;
 
 const imageElement = document.getElementById("main-image");
@@ -90,3 +90,5 @@ function playEasterEgg(type) {
   const audio = new Audio(src);
   audio.play();
 }
+
+*/
