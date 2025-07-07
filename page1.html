@@ -571,6 +571,9 @@ function getRarityWithProbabilityBoost() {
         miniPlayer.style.display = "none";
         clearInterval(progressInterval);
       };
+// 배경 원래대로 복구
+  document.body.className = "";
+  document.body.classList.add(normalBgClasses[currentIndex]);
     }
 
     // 프로그래스 바 수동 이동
@@ -606,6 +609,10 @@ function getRarityWithProbabilityBoost() {
         audioPlayer = null;
       }
       miniPlayer.style.display = "none";
+
+// 배경 원래대로 복구
+  document.body.className = "";
+  document.body.classList.add(normalBgClasses[currentIndex]);
     });
 
     // 이미지 클릭(이스터에그 카운트)
