@@ -431,7 +431,7 @@
         gachaBox.className = `gacha-box rarity-${rarity}`;
         document.body.className = rarity + "-bg";
 
-        playAudio(audioSrc);
+        playAudio(audioSrc, label);
         soundButton.disabled = false;
       }, 700);
     }
@@ -467,7 +467,7 @@
       if (!easterEggUnlocked) return;
       const audioSrc = sounds[currentIndex][type];
       if (!audioSrc) return;
-      playAudio(audioSrc);
+      playAudio(audioSrc, label);
     }
 
     // 이스터에그 클릭 카운터 업데이트 & 해금 체크
