@@ -338,6 +338,31 @@
       "사인귀파줘 하유"
     ];
 
+    // 이미지별 배경색 설정
+const bgColors = [
+  "#2d2d44",    // 1. 밤의 어두운색 → 연한 남색 계열
+  "#5c3a3a",    // 2. 붉은 어두운색 → 부드러운 브라운레드
+  "#fafafa",    // 3. 아침의 하양색 → 거의 흰색
+  "#c8c8c8",    // 4. 오피스 바닥 그림자 → 중간 회색
+  "#fff8dc",    // 5. 밝은 전등색 → 크림 톤
+  "#f3e2d2",    // 6. 아늑한 방색 → 베이지핑크
+  "#bcd4e6",    // 7. 도시 외부 → 연한 스카이블루
+  "linear-gradient(135deg, #4b607c, #ffddee)",  // 8. 군청핑크 → 연한 버전
+  "#d8d8d8",    // 9. 셔츠 느낌 회색 → 밝은 회색
+  "#cd8c70",    // 10. 붉은 나무색 → 연한 브릭
+  "#e0d5b9",    // 11. 라디오 느낌 → 밝은 빈티지
+  "#fff0f5",    // 12. 바니잠옷 → 라이트 핑크
+  "#4c5c78",    // 13. 밤하늘 → 연한 쪽빛
+  "#d0f0ff",    // 14. 밝은 하늘 → 아기 하늘색
+  "#ffd6dc",    // 15. 밤 축제 → 연한 살구핑크
+  "#e6f2fa",    // 16. 별자리 → 연한 하늘배경
+  "#cda69c",    // 17. 벽난로 → 따뜻한 연갈색
+  "#a8d0d6",    // 18. 푸른 뱀 → 파스텔 민트
+  "#3a3a5c",    // 19. 밤의 도시 → 연한 쿨네이비
+  "#fdfaf7"     // 20. 코튼 → 연베이지
+];
+
+    
     const voiceNames = [
       ["보쌈하는중", "눈감으면이런느낌", "이정도로붙으면곤란"],
       ["발렌타인잘보내", "알파벳시동", "알파벳"],
@@ -370,29 +395,16 @@
 
     function updateDisplay() {
       imageElement.src = images[currentIndex];
-// 이미지별 배경색 설정
-const bgColors = [
-  "#2d2d44",    // 1. 밤의 어두운색 → 연한 남색 계열
-  "#5c3a3a",    // 2. 붉은 어두운색 → 부드러운 브라운레드
-  "#fafafa",    // 3. 아침의 하양색 → 거의 흰색
-  "#c8c8c8",    // 4. 오피스 바닥 그림자 → 중간 회색
-  "#fff8dc",    // 5. 밝은 전등색 → 크림 톤
-  "#f3e2d2",    // 6. 아늑한 방색 → 베이지핑크
-  "#bcd4e6",    // 7. 도시 외부 → 연한 스카이블루
-  "linear-gradient(135deg, #4b607c, #ffddee)",  // 8. 군청핑크 → 연한 버전
-  "#d8d8d8",    // 9. 셔츠 느낌 회색 → 밝은 회색
-  "#cd8c70",    // 10. 붉은 나무색 → 연한 브릭
-  "#e0d5b9",    // 11. 라디오 느낌 → 밝은 빈티지
-  "#fff0f5",    // 12. 바니잠옷 → 라이트 핑크
-  "#4c5c78",    // 13. 밤하늘 → 연한 쪽빛
-  "#d0f0ff",    // 14. 밝은 하늘 → 아기 하늘색
-  "#ffd6dc",    // 15. 밤 축제 → 연한 살구핑크
-  "#e6f2fa",    // 16. 별자리 → 연한 하늘배경
-  "#cda69c",    // 17. 벽난로 → 따뜻한 연갈색
-  "#a8d0d6",    // 18. 푸른 뱀 → 파스텔 민트
-  "#3a3a5c",    // 19. 밤의 도시 → 연한 쿨네이비
-  "#fdfaf7"     // 20. 코튼 → 연베이지
-];
+// 가챠로 설정된 레어/스페셜 배경이 아니라면 슬라이드용 배경 적용
+if (!document.body.classList.contains("rare-bg") && !document.body.classList.contains("special-bg")) {
+  const bg = bgColors[currentIndex];
+  if (bg.startsWith("linear-gradient")) {
+    document.body.style.background = bg;
+  } else {
+    document.body.style.background = "";
+    document.body.style.backgroundColor = bg;
+  }
+}
 
 
 const bg = bgColors[currentIndex];
@@ -405,7 +417,7 @@ if (bg.startsWith("linear-gradient")) {
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
       gachaBox.textContent = "-";
       gachaBox.className = "gacha-box rarity-normal";
-      document.body.className = "normal-bg";
+      
       document.getElementById("image-title").textContent = titles[currentIndex];
       soundButton.disabled = false;
       hideEggCounterIfNeeded();
