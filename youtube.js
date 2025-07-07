@@ -18,20 +18,8 @@ let autoplayEnabled = true;
 let randomEnabled = false;
 let isEventListenerAdded = false;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const savedIndex = parseInt(localStorage.getItem("ytCurrentIndex"));
-  if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex < videoIds.length) {
-    currentIndex = savedIndex;
-  } else {
-    currentIndex = 0;
-  }
-
-  if (window.YT && YT.Player) {
-    window.onYouTubeIframeAPIReady();
-  }
-});
-
-window.onYouTubeIframeAPIReady = function () {
+// 플레이어 생성 함수
+function createPlayer() {
   if (player) {
     player.destroy();
     player = null;
@@ -42,7 +30,7 @@ window.onYouTubeIframeAPIReady = function () {
     videoId: videoIds[currentIndex],
     playerVars: {
       autoplay: 1,
-      mute: 1
+      mute: 1 // 초기 음소거
     },
     events: {
       'onReady': (event) => {
@@ -52,7 +40,26 @@ window.onYouTubeIframeAPIReady = function () {
       'onStateChange': onPlayerStateChange
     }
   });
+}
+
+// YouTube API가 준비되면 호출되는 전역 함수 (필수)
+window.onYouTubeIframeAPIReady = function () {
+  createPlayer();
 };
+
+// 페이지가 준비됐을 때 저장된 인덱스 복원하고 API 준비 시 플레이어 생성 시도
+document.addEventListener('DOMContentLoaded', () => {
+  const savedIndex = parseInt(localStorage.getItem("ytCurrentIndex"));
+  if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex < videoIds.length) {
+    currentIndex = savedIndex;
+  }
+
+  // API가 이미 로드되어 있으면 바로 플레이어 생성
+  if (window.YT && YT.Player) {
+    createPlayer();
+  }
+  // 아니라면 API가 준비되면 onYouTubeIframeAPIReady가 호출되어 처리됨
+});
 
 function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
@@ -119,3 +126,10 @@ function getRandomIndex(current) {
   } while (index === current);
   return index;
 }
+
+// 새로고침 방지 (선택사항)
+window.addEventListener("keydown", function (e) {
+  if (e.key === "F5" || (e.ctrlKey && e.key.toLowerCase() === "r")) {
+    e.preventDefault();
+  }
+});
