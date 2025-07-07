@@ -529,8 +529,15 @@ function getRarityWithProbabilityBoost() {
       setTimeout(() => {
         gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
         gachaBox.className = `gacha-box rarity-${rarity}`;
-        document.body.className = rarity + "-bg";
-
+        document.body.className =if (rarity === "normal") {
+  // 노말은 배경 변화 없음 (현재 슬라이드 배경 유지)
+  document.body.className = "";
+  document.body.classList.add(normalBgClasses[currentIndex]);
+} else if (rarity === "rare") {
+  document.body.className = "rare-bg";
+} else if (rarity === "special") {
+  document.body.className = "special-bg";
+}
         playAudio(audioSrc, label);
         soundButton.disabled = false;
       }, 700);
