@@ -676,12 +676,13 @@ function getRarityWithProbabilityBoost() {
     });
 
     // 이전, 다음 버튼 이벤트
- document.getElementById("next-btn").addEventListener("click", nextSlide);
-document.getElementById("prev-btn").addEventListener("click", prevSlide);
+ document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("next-btn").addEventListener("click", nextSlide);
+  document.getElementById("prev-btn").addEventListener("click", prevSlide);
 
-    // 초기 화면 업데이트
-    updateDisplay();
-
+  // 초기 화면 업데이트
+  updateDisplay();
+});
     // 이스터에그 카운터 숨기기/보이기 함수
     function hideEggCounterIfNeeded() {
       if (currentIndex === 19 && !easterEggUnlocked) {
