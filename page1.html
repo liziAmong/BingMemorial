@@ -143,6 +143,30 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
       50% { transform: scale(1.2); opacity: 1; }
       100% { transform: scale(1); }
     }
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+#probability-boost-msg {
+  margin-top: 8px;
+  color: #ff4081;
+  font-weight: bold;
+  display: none;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff;
+  animation: flash 1.2s infinite;
+}
+
+
     .home-link {
       margin: 30px auto;
       text-align: center;
@@ -275,9 +299,7 @@ body.bg20 { background: linear-gradient(135deg, #e6d7d1, #e8bcd0); }   /* 베이
     <div id="image-title">들어오세요 하유</div>
     <div id="easter-egg-click-counter">0 / 13</div>
     <div id="gacha-box" class="gacha-box rarity-normal">-</div>
-<div id="probability-boost-msg" style="margin-top: 8px; color: #ff4081; font-weight: bold; display: none;">
-  🔥 확률 업 적용 중!
-</div>
+<div id="probability-boost-msg">🔥 확률 업 적용 중!</div>
     <div class="controls">
       <button id="sound-btn">🎲 가챠 돌리기</button>
       <button id="prev-btn">◀ 이전</button>
