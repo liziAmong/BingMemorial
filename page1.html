@@ -16,8 +16,30 @@
       align-items: center;
       min-height: 100vh;
       transition: background 0.8s ease;
-      background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
     }
+    /* 슬라이드별 배경색 */
+    body.bg1 { background-color: #2d2d44; }
+    body.bg2 { background-color: #5c3a3a; }
+    body.bg3 { background-color: #fafafa; }
+    body.bg4 { background-color: #c8c8c8; }
+    body.bg5 { background-color: #fff8dc; }
+    body.bg6 { background-color: #f3e2d2; }
+    body.bg7 { background-color: #bcd4e6; }
+    body.bg8 { background: linear-gradient(135deg, #4b607c, #ffddee); }
+    body.bg9 { background-color: #d8d8d8; }
+    body.bg10 { background-color: #cd8c70; }
+    body.bg11 { background-color: #e0d5b9; }
+    body.bg12 { background-color: #fff0f5; }
+    body.bg13 { background-color: #4c5c78; }
+    body.bg14 { background-color: #d0f0ff; }
+    body.bg15 { background-color: #ffd6dc; }
+    body.bg16 { background-color: #e6f2fa; }
+    body.bg17 { background-color: #cda69c; }
+    body.bg18 { background-color: #a8d0d6; }
+    body.bg19 { background-color: #3a3a5c; }
+    body.bg20 { background-color: #fdfaf7; }
+
+    /* 가챠 희귀도별 배경 */
     body.normal-bg {
       background: linear-gradient(to bottom, #ffe6f0, #e0f7ff);
     }
@@ -27,6 +49,8 @@
     body.special-bg {
       background: linear-gradient(to bottom, #ff9a9e, #fecfef);
     }
+
+    /* 이하 기존 스타일 유지 */
     .slider-container {
       width: 100%;
       text-align: center;
@@ -52,7 +76,7 @@
       min-height: 28px;
     }
     #easter-egg-click-counter {
-    display: none !important;
+      display: none !important;
     }
     .controls {
       margin-top: 15px;
@@ -239,7 +263,7 @@
     }
   </style>
 </head>
-<body class="normal-bg" oncontextmenu="return false">
+<body class="bg1" oncontextmenu="return false">
   <div class="slider-container">
     <img id="main-image" src="images/image1.jpg" alt="슬라이드 이미지" />
     <div id="image-title">들어오세요 하유</div>
@@ -338,31 +362,6 @@
       "사인귀파줘 하유"
     ];
 
-    // 이미지별 배경색 설정
-const bgColors = [
-  "#2d2d44",    // 1. 밤의 어두운색 → 연한 남색 계열
-  "#5c3a3a",    // 2. 붉은 어두운색 → 부드러운 브라운레드
-  "#fafafa",    // 3. 아침의 하양색 → 거의 흰색
-  "#c8c8c8",    // 4. 오피스 바닥 그림자 → 중간 회색
-  "#fff8dc",    // 5. 밝은 전등색 → 크림 톤
-  "#f3e2d2",    // 6. 아늑한 방색 → 베이지핑크
-  "#bcd4e6",    // 7. 도시 외부 → 연한 스카이블루
-  "linear-gradient(135deg, #4b607c, #ffddee)",  // 8. 군청핑크 → 연한 버전
-  "#d8d8d8",    // 9. 셔츠 느낌 회색 → 밝은 회색
-  "#cd8c70",    // 10. 붉은 나무색 → 연한 브릭
-  "#e0d5b9",    // 11. 라디오 느낌 → 밝은 빈티지
-  "#fff0f5",    // 12. 바니잠옷 → 라이트 핑크
-  "#4c5c78",    // 13. 밤하늘 → 연한 쪽빛
-  "#d0f0ff",    // 14. 밝은 하늘 → 아기 하늘색
-  "#ffd6dc",    // 15. 밤 축제 → 연한 살구핑크
-  "#e6f2fa",    // 16. 별자리 → 연한 하늘배경
-  "#cda69c",    // 17. 벽난로 → 따뜻한 연갈색
-  "#a8d0d6",    // 18. 푸른 뱀 → 파스텔 민트
-  "#3a3a5c",    // 19. 밤의 도시 → 연한 쿨네이비
-  "#fdfaf7"     // 20. 코튼 → 연베이지
-];
-
-    
     const voiceNames = [
       ["보쌈하는중", "눈감으면이런느낌", "이정도로붙으면곤란"],
       ["발렌타인잘보내", "알파벳시동", "알파벳"],
@@ -391,39 +390,32 @@ const bgColors = [
 
     // 이스터에그 해금 여부 세션스토리지에서 불러오기
     let easterEggUnlocked = sessionStorage.getItem('easterEggUnlocked') === 'true';
-    let eggClickCount = 0;
+    let eggClickCount = parseInt(sessionStorage.getItem('eggClickCount'), 10) || 0;
+
+    // 슬라이드별 배경 클래스 배열
+    const normalBgClasses = [
+      "bg1","bg2","bg3","bg4","bg5","bg6","bg7","bg8","bg9","bg10",
+      "bg11","bg12","bg13","bg14","bg15","bg16","bg17","bg18","bg19","bg20"
+    ];
 
     function updateDisplay() {
       imageElement.src = images[currentIndex];
-// 가챠로 설정된 레어/스페셜 배경이 아니라면 슬라이드용 배경 적용
-if (!document.body.classList.contains("rare-bg") && !document.body.classList.contains("special-bg")) {
-  const bg = bgColors[currentIndex];
-  if (bg.startsWith("linear-gradient")) {
-    document.body.style.background = bg;
-  } else {
-    document.body.style.background = "";
-    document.body.style.backgroundColor = bg;
-  }
-}
 
+      // 가챠 배경이 아닐 때만 슬라이드 배경 적용
+      if (!document.body.classList.contains("rare-bg") && !document.body.classList.contains("special-bg")) {
+        document.body.className = "";
+        document.body.classList.add(normalBgClasses[currentIndex]);
+      }
 
-const bg = bgColors[currentIndex];
-if (bg.startsWith("linear-gradient")) {
-  document.body.style.background = bg;
-} else {
-  document.body.style.background = "";
-  document.body.style.backgroundColor = bg;
-}
       counter.textContent = `${currentIndex + 1} / ${totalItems}`;
       gachaBox.textContent = "-";
       gachaBox.className = "gacha-box rarity-normal";
-      
       document.getElementById("image-title").textContent = titles[currentIndex];
       soundButton.disabled = false;
       hideEggCounterIfNeeded();
-      // 이스터에그 플레이어 노출 제어
+
       eggPlayer.style.display = easterEggUnlocked ? "block" : "none";
-      // 클릭 카운터 초기화는 20번 슬라이드 아니면 숨기고 리셋
+
       if (currentIndex === 19) {
         eggClickCounter.style.display = "block";
         eggClickCounter.textContent = `${eggClickCount} / 13`;
@@ -432,6 +424,7 @@ if (bg.startsWith("linear-gradient")) {
         eggClickCount = 0;
         sessionStorage.setItem('eggClickCount', eggClickCount);
       }
+
       if (audioPlayer) {
         audioPlayer.pause();
         audioPlayer = null;
@@ -439,37 +432,52 @@ if (bg.startsWith("linear-gradient")) {
       miniPlayer.style.display = "none";
     }
 
-    function hideEggCounterIfNeeded() {
-      if (currentIndex !== 19) {
-        eggClickCounter.style.display = "none";
+    // 다음 슬라이드
+    function nextSlide() {
+      if (currentIndex < totalItems - 1) {
+        currentIndex++;
+        updateDisplay();
       }
     }
 
-    function playGachaEffect() {
-      const roll = Math.random();
-      const soundSet = sounds[currentIndex];
-      let rarity = "normal";
-      let audioSrc = soundSet.normal;
-      let label = voiceNames[currentIndex][0];
+    // 이전 슬라이드
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateDisplay();
+      }
+    }
 
-      if (roll < 0.5) {
-        rarity = "normal";
-        audioSrc = soundSet.normal;
-        label = voiceNames[currentIndex][0];
-      } else if (roll < 0.8) {
+    // 가챠 버튼 클릭
+    soundButton.addEventListener("click", () => {
+      soundButton.disabled = true;
+      gachaBox.textContent = "🎲 돌리는중...";
+      gachaBox.className = "gacha-box rarity-normal";
+
+      // 랜덤 확률 (간단 예: 10% rare, 3% special)
+      const randomNum = Math.random();
+      let rarity = "normal";
+      if (randomNum < 0.03) {
+        rarity = "special";
+      } else if (randomNum < 0.13) {
         rarity = "rare";
-        audioSrc = soundSet.rare;
+      }
+
+      // 오디오 소스 선택
+      let audioSrc;
+      let label;
+      if (rarity === "normal") {
+        audioSrc = sounds[currentIndex].normal;
+        label = voiceNames[currentIndex][0];
+      } else if (rarity === "rare") {
+        audioSrc = sounds[currentIndex].rare;
         label = voiceNames[currentIndex][1];
       } else {
-        rarity = "special";
-        audioSrc = soundSet.special;
+        audioSrc = sounds[currentIndex].special;
         label = voiceNames[currentIndex][2];
       }
 
-      soundButton.disabled = true;
-      gachaBox.textContent = "🔄 로딩 중...";
-      gachaBox.className = "gacha-box rolling";
-
+      // 0.7초 후 결과 표시 및 재생
       setTimeout(() => {
         gachaBox.textContent = rarity === "normal" ? "🎵 노말" : rarity === "rare" ? "🌟 레어 등장!" : "💖 스페셜 획득!";
         gachaBox.className = `gacha-box rarity-${rarity}`;
@@ -478,138 +486,139 @@ if (bg.startsWith("linear-gradient")) {
         playAudio(audioSrc, label);
         soundButton.disabled = false;
       }, 700);
-    }
+    });
 
-    function playAudio(src,label) {
+    // 오디오 재생 함수
+    function playAudio(src, title) {
       if (audioPlayer) {
         audioPlayer.pause();
         audioPlayer = null;
       }
+
       audioPlayer = new Audio(src);
       audioPlayer.volume = volumeBar.value;
       audioPlayer.play();
-      miniTitle.textContent = label;
+
+      miniTitle.textContent = title;
       miniPlayer.style.display = "flex";
+
+      // 프로그래스 바 업데이트
       progressBar.value = 0;
       progressBar.max = 100;
 
       if (progressInterval) clearInterval(progressInterval);
+
       progressInterval = setInterval(() => {
-        if (audioPlayer.duration) {
+        if (audioPlayer && audioPlayer.duration) {
           progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
         }
-      }, 200);
+      }, 250);
 
       audioPlayer.onended = () => {
         miniPlayer.style.display = "none";
-        if (progressInterval) clearInterval(progressInterval);
+        clearInterval(progressInterval);
       };
     }
 
-    // 이스터에그 음성 재생 함수
-  function playEasterEggAudio(type) {
-  if (!easterEggUnlocked) return;
-  const audioSrc = sounds[currentIndex][type];
-  if (!audioSrc) return;
-
-  let label;
-  if (type === 'normal') {
-    label = voiceNames[currentIndex][0];
-  } else if (type === 'rare') {
-    label = voiceNames[currentIndex][1];
-  } else if (type === 'special') {
-    label = voiceNames[currentIndex][2];
-  } else {
-    label = "음성";
-  }
-
-  playAudio(audioSrc, label);
-}
-
-    // 이스터에그 클릭 카운터 업데이트 & 해금 체크
-    function incrementEggClick() {
-      if (currentIndex !== 19) return; // 20번 슬라이드에서만 카운트
-      eggClickCount++;
-      eggClickCounter.textContent = `${eggClickCount} / 13`;
-      sessionStorage.setItem('eggClickCount', eggClickCount);
-      if (eggClickCount >= 13 && !easterEggUnlocked) {
-        easterEggUnlocked = true;
-        sessionStorage.setItem('easterEggUnlocked', 'true');
-        alert("🌟 이스터 에그가 해금되었습니다! 아래 플레이어에서 음성을 들어보세요.");
-        eggPlayer.style.display = "block";
-      }
-    }
-
-    // 이미지 클릭 시 이벤트
-    imageElement.addEventListener('click', () => {
-      incrementEggClick();
-    });
-
-    // 가챠 버튼 클릭 이벤트
-    soundButton.addEventListener('click', () => {
-      playGachaEffect();
-    });
-
-    // 이전 버튼 클릭 이벤트
-    document.getElementById('prev-btn').addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
-      updateDisplay();
-    });
-
-    // 다음 버튼 클릭 이벤트
-    document.getElementById('next-btn').addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % totalItems;
-      updateDisplay();
-    });
-
-    // 이스터에그 플레이어 버튼 클릭 이벤트 (노말, 레어, 스페셜 음성 재생)
-    eggPlayer.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const type = btn.getAttribute('data-type');
-        playEasterEggAudio(type);
-      });
-    });
-
-    // 미니 플레이어 컨트롤
-    pauseBtn.addEventListener('click', () => {
-      if (!audioPlayer) return;
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-        pauseBtn.textContent = '⏸️';
-      } else {
-        audioPlayer.pause();
-        pauseBtn.textContent = '▶️';
-      }
-    });
-
-    closeBtn.addEventListener('click', () => {
-      if (audioPlayer) {
-        audioPlayer.pause();
-        audioPlayer = null;
-      }
-      miniPlayer.style.display = 'none';
-      if (progressInterval) clearInterval(progressInterval);
-    });
-
-    progressBar.addEventListener('input', () => {
+    // 프로그래스 바 수동 이동
+    progressBar.addEventListener("input", () => {
       if (audioPlayer && audioPlayer.duration) {
         audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
       }
     });
 
-    volumeBar.addEventListener('input', () => {
+    // 볼륨 조절
+    volumeBar.addEventListener("input", () => {
       if (audioPlayer) {
         audioPlayer.volume = volumeBar.value;
       }
     });
 
-    // 초기 세션에 저장된 클릭 카운트 복원 (20번 슬라이드에서만)
-    if (sessionStorage.getItem('eggClickCount')) {
-      eggClickCount = parseInt(sessionStorage.getItem('eggClickCount'), 10) || 0;
-    }
+    // 일시정지 버튼
+    pauseBtn.addEventListener("click", () => {
+      if (!audioPlayer) return;
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        pauseBtn.textContent = "⏸️";
+      } else {
+        audioPlayer.pause();
+        pauseBtn.textContent = "▶️";
+      }
+    });
 
-    // 초기 화면 표시
+    // 플레이어 닫기
+    closeBtn.addEventListener("click", () => {
+      if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+      }
+      miniPlayer.style.display = "none";
+    });
+
+    // 이미지 클릭(이스터에그 카운트)
+    imageElement.addEventListener("click", () => {
+      if (currentIndex === 19 && !easterEggUnlocked) {
+        eggClickCount++;
+        if (eggClickCount >= 13) {
+          easterEggUnlocked = true;
+          sessionStorage.setItem('easterEggUnlocked', 'true');
+          eggPlayer.style.display = "block";
+          eggClickCounter.style.display = "none";
+          alert("🌟 이스터에그가 해금되었습니다!");
+        }
+        sessionStorage.setItem('eggClickCount', eggClickCount);
+        eggClickCounter.textContent = `${eggClickCount} / 13`;
+      }
+    });
+
+    // 이스터에그 음성 플레이어 버튼
+    eggPlayer.querySelectorAll("button").forEach(button => {
+      button.addEventListener("click", () => {
+        const type = button.dataset.type;
+        let audioSrc;
+        let label;
+
+        if (type === "normal") {
+          audioSrc = sounds[19].normal;
+          label = voiceNames[19][0];
+        } else if (type === "rare") {
+          audioSrc = sounds[19].rare;
+          label = voiceNames[19][1];
+        } else {
+          audioSrc = sounds[19].special;
+          label = voiceNames[19][2];
+        }
+
+        playAudio(audioSrc, label);
+      });
+    });
+
+    // 이전, 다음 버튼 이벤트
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (currentIndex < totalItems - 1) {
+        currentIndex++;
+        updateDisplay();
+      }
+    });
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateDisplay();
+      }
+    });
+
+    // 초기 화면 업데이트
     updateDisplay();
+
+    // 이스터에그 카운터 숨기기/보이기 함수
+    function hideEggCounterIfNeeded() {
+      if (currentIndex === 19 && !easterEggUnlocked) {
+        eggClickCounter.style.display = "block";
+      } else {
+        eggClickCounter.style.display = "none";
+      }
+    }
   </script>
 </body>
 </html>
