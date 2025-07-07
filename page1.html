@@ -565,10 +565,12 @@ function getRarityWithProbabilityBoost() {
       audioPlayer.onended = () => {
         miniPlayer.style.display = "none";
         clearInterval(progressInterval);
-      };
+
 // 배경 원래대로 복구
   document.body.className = "";
   document.body.classList.add(normalBgClasses[currentIndex]);
+      };
+
     }
 
     // 프로그래스 바 수동 이동
