@@ -12,6 +12,25 @@ const videoDates = [
   "2023-07-16", "2023-05-13", "2023-05-01"
 ];
 
+const bgColors = [
+  "#a8d0ff",  // 1. 연한 하늘
+  "#f9c5d1",  // 2. 연한 핑크
+  "#6e6e6e",  // 3. 검은 회색
+  "#2a2a2a",  // 4. 검은색
+  "#ffad60",  // 5. 노을색
+  "#76c7c0",  // 6. 바다색
+  "#fbe992",  // 7. 빛나는 황금색
+  "#f8a5c2",  // 8. 핑크색
+  "#7d5ba6",  // 9. 검은 보라색
+  "linear-gradient(135deg, #a8d0ff 0%, #f9c5d1 100%)", // 10. 핑크 하늘 그라데이션
+  "#1e213a",  // 11. 밤 도시 색
+  "#f9e79f",  // 12. 노란색
+  "#6d295b",  // 13. 검정 핑크색
+  "#f8d7da",  // 14. 핑크 하늘 하양색
+  "#e3f2fd",  // 15. 핑크 하늘 하양색
+];
+
+
 let currentIndex = 0;
 let player = null;
 let autoplayEnabled = true;
@@ -64,7 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
   document.getElementById("video-date").textContent = `업로드 날짜: ${videoDates[currentIndex]}`;
+
+   const color = bgColors[currentIndex];
+  if (color.startsWith("linear-gradient")) {
+    document.body.style.background = color;
+  } else {
+    document.body.style.background = "";
+    document.body.style.backgroundColor = color;
+  }
 }
+}
+
+
 
 function loadVideo(index) {
   if (player && typeof player.loadVideoById === "function") {
