@@ -84,12 +84,11 @@ function updateVideoInfo() {
   document.getElementById("video-order").textContent = `영상 ${currentIndex + 1} / ${videoIds.length}`;
   document.getElementById("video-date").textContent = `업로드 날짜: ${videoDates[currentIndex]}`;
 
-   const color = bgColors[currentIndex];
+  const color = bgColors[currentIndex];
   if (color.startsWith("linear-gradient")) {
-    document.body.style.background = color;
+    document.body.style.background = color; // 그라데이션은 전체 background로 적용
   } else {
-    document.body.style.background = "";
-    document.body.style.backgroundColor = color;
+    document.body.style.background = color; // 단색도 background로 덮어쓰기
   }
 }
 
