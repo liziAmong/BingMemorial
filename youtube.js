@@ -12,7 +12,15 @@ const videoDates = [
   "2023-07-16", "2023-05-13", "2023-05-01"
 ];
 
-let currentIndex = 0;
+// localStorage에서 저장된 인덱스 불러오기
+const savedIndex = parseInt(localStorage.getItem("ytCurrentIndex"));
+let currentIndex;
+if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex < videoIds.length) {
+  currentIndex = savedIndex;
+} else {
+  currentIndex = 0;
+}
+
 let player;
 let autoplayEnabled = true;
 let randomEnabled = false;
@@ -31,6 +39,9 @@ function loadVideo(index) {
     player.unMute();
 
     updateVideoInfo();
+
+    // 현재 인덱스 저장 (새로고침/복귀 시 유지)
+    localStorage.setItem("ytCurrentIndex", index);
   }
 }
 
